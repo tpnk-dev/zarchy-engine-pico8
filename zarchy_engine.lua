@@ -41,6 +41,9 @@ player = nil
 mov_tiles_x = 0
 mov_tiles_z = 0
 
+-- RENDER STUFF
+triangle_list = {}
+
 -- cam_matrix_transform
 sx=sin(cam_ax)
 sy=sin(cam_ay)
@@ -61,6 +64,99 @@ cam_mat22=sx*sz*sy+cx*cy
 
 function rotate_cam_point(x,y,z)
     return (x)*cam_mat00+(y)*cam_mat10+(z)*cam_mat20,(x)*cam_mat01+(y)*cam_mat11+(z)*cam_mat21,(x)*cam_mat02+(y)*cam_mat12+(z)*cam_mat22
+end
+
+function trifill(x1,y1,x2,y2,x3,y3, color)
+	color1 = color
+	local x1=band(x1,0xffff)
+          local x2=band(x2,0xffff)
+          local y1=band(y1,0xffff)
+          local y2=band(y2,0xffff)
+          local x3=band(x3,0xffff)
+          local y3=band(y3,0xffff)
+          
+          local nsx,nex
+          --sort y1,y2,y3
+          if(y1>y2)then
+            y1,y2=y2,y1
+            x1,x2=x2,x1
+          end
+          
+          if(y1>y3)then
+            y1,y3=y3,y1
+            x1,x3=x3,x1
+          end
+          
+          if(y2>y3)then
+            y2,y3=y3,y2
+            x2,x3=x3,x2          
+          end
+          
+         if(y1!=y2)then          
+            local delta_sx=(x3-x1)/(y3-y1)
+            local delta_ex=(x2-x1)/(y2-y1)
+           
+            if(y1>0)then
+                nsx=x1
+                nex=x1
+                min_y=y1
+            else --top edge clip
+                nsx=x1-delta_sx*y1
+                nex=x1-delta_ex*y1
+                min_y=0
+            end
+           
+            max_y=min(y2,128)
+           
+            for y=min_y,max_y-1 do
+
+            rectfill(nsx,y,nex,y,color1)
+            --if(band(y,1)==0)then rectfill(nsx,y,nex,y,color1) else rectfill(nsx,y,nex,y,color2) end
+            nsx+=delta_sx
+            nex+=delta_ex
+            end
+
+        else --where top edge is horizontal
+            nsx=x1
+            nex=x2
+        end
+
+          
+        if(y3!=y2)then
+            local delta_sx=(x3-x1)/(y3-y1)
+            local delta_ex=(x3-x2)/(y3-y2)
+           
+            min_y=y2
+            max_y=min(y3,128)
+            if(y2<0)then
+                nex=x2-delta_ex*y2
+                nsx=x1-delta_sx*y1
+                min_y=0
+            end
+           
+             for y=min_y,max_y do
+
+                rectfill(nsx,y,nex,y,color1)
+                --if(band(y,1)==0)then rectfill(nsx,y,nex,y,color1) else rectfill(nsx,y,nex,y,color2) end
+                nex+=delta_ex
+                nsx+=delta_sx
+             end
+           
+        else --where bottom edge is horizontal
+            rectfill(nsx,y3,nex,y3,color1)
+            --if(band(y,1)==0)then rectfill(nsx,y3,nex,y3,color1) else rectfill(nsx,y3,nex,y3,color2) end
+        end
+
+end
+
+function draw_triangle_list()
+    --for t in all(triangle_list) do
+    for i=1,#triangle_list do
+        local t=triangle_list[i]
+        --fillp(0b0000000000000000)
+        --if(t.fade_out) fillp(0b1010010110100101)
+        trifill( t.p1x,t.p1y,t.p2x,t.p2y,t.p3x,t.p3y, t.color )
+    end
 end
 
 function render_terrain()
@@ -102,12 +198,12 @@ function render_terrain()
 
         vert_camera_x, vert_camera_y, vert_camera_z=rotate_cam_point(vert_camera_x, vert_camera_y, vert_camera_z)
         
-        trans_proj_vert = add(trans_proj_verts, {vert_camera_x, vert_camera_y, vert_camera_z, vert_camera_x*k_screen_scale/vert_camera_z+k_x_center,vert_camera_y*k_screen_scale/vert_camera_z+k_x_center, 2})
+        trans_proj_vert = add(trans_proj_verts, {vert_camera_x, vert_camera_y, vert_camera_z, vert_camera_x*k_screen_scale/vert_camera_z+k_x_center,vert_camera_y*k_screen_scale/vert_camera_z+k_x_center, (terrain_vertex_data[vert_x_id][vert_z_id]&0x000f)})
 
 
         --x[[ PRINT VERTEX DATA
         if(v%num_verts_sector == 0)then 
-            print(tostr(vert_z_id), trans_proj_vert[4], trans_proj_vert[5], 11)
+            print(tostr(vert_z_id), trans_proj_vert[4]-15, trans_proj_vert[5], 11)
         end
 
         if(flr(v/num_verts_sector) == 0)then 
@@ -120,7 +216,7 @@ function render_terrain()
         --]]
         
         --x[[ PRINT VERTEX DATA
-        --print(vert_world_y, trans_proj_vert[4], trans_proj_vert[5], 5)
+        --print(vert_camera_y, trans_proj_vert[4], trans_proj_vert[5], 5)
         --]]
     end
 
@@ -134,7 +230,7 @@ function render_terrain()
             local p2 = trans_proj_verts[v - num_verts_sector + 1]
             local p4 = trans_proj_verts[v -  num_verts_sector]
             
-            --x[[ WIREFRAME
+            --[[ WIREFRAME
             line(p1[4],p1[5], p2[4],p2[5], 7)
             line(p2[4],p2[5], p4[4],p4[5], 7)
             --line(p4[4],p4[5], p1[4],p1[5], 7)
@@ -150,13 +246,59 @@ function render_terrain()
                 --print(v, p1[4],p1[5]-3, 8)
             --]]
 
+            local p1x,p1y,p1z= p1[1], p1[2], p1[3] 
+            local p2x,p2y,p2z= p2[1], p2[2], p2[3] 
+            local p3x,p3y,p3z= p3[1], p3[2], p3[3] 
+            local p4x,p4y,p4z= p4[1], p4[2], p4[3]
+
+            local cz=.01*(p1z+p2z+p3z)/3
+            local cx=.01*(p1x+p2x+p3x)/3
+            local cy=.01*(p1y+p2y+p3y)/3
+            local z_paint= -cx*cx-cy*cy-cz*cz
+
+            local fade_out = false
+            
+            local s1x,s1y = p1[4],p1[5]
+            local s2x,s2y = p2[4],p2[5]
+            local s3x,s3y = p3[4],p3[5]
+            local s4x,s4y = p4[4],p4[5]
+
+            if(( (s1x-s2x)*(s4y-s2y)-(s1y-s2y)*(s4x-s2x)) < 0)then
+                add(triangle_list,{
+                    p1x=s1x,
+                    p1y=s1y,
+                    p2x=s2x,
+                    p2y=s2y,
+                    p3x=s4x,
+                    p3y=s4y,
+                    tz=z_paint,
+                    color=p2[6],
+                    fade_out=fade_out})
+            end
+            if(( (s4x-s3x)*(s1y-s3y)-(s4y-s3y)*(s1x-s3x)) < 0)then
+                add(triangle_list,{
+                    p1x=s4x,
+                    p1y=s4y,
+                    p2x=s3x,
+                    p2y=s3y,
+                    p3x=s1x,
+                    p3y=s1y,
+                    tz=z_paint,
+                    color=p2[6],
+                    fade_out=fade_out})
+            end
+            
+
         end
         
     end
+
+    draw_triangle_list()
+    triangle_list = {}
     
 
     --x[[ PRINT 
-        print("웃", trans_proj_verts[num_verts_sector/2 + (num_verts_sector*(num_verts_sector/2- 1))][4], trans_proj_verts[num_verts_sector/2 + (num_verts_sector*(num_verts_sector/2 - 1))][5], 8)
+        print("웃", trans_proj_verts[num_verts_sector/2 + (num_verts_sector*(num_verts_sector/2- 1))][4]-3, trans_proj_verts[num_verts_sector/2 + (num_verts_sector*(num_verts_sector/2 - 1))][5]-5, 8)
     --]]
 end
 
