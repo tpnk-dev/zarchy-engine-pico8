@@ -34,7 +34,7 @@ cam_x = 0
 cam_y = 50
 cam_z = -cam_dist_terrain
 
-cam_ax, cam_ay, cam_az = -0.1,0,0
+cam_ax, cam_ay, cam_az = -0.1,0.5,0
 
 -- PLAYER PARAMS
 player = nil
@@ -171,12 +171,12 @@ function render_terrain()
         local vert_world_x = (v%num_verts_sector)*tile_size + (mov_tiles_x-flr(num_verts_sector/2-1))*tile_size
         --print(tonum(sub(-terrain_vertex_data[vert_x_id][vert_z_id],1,2)), 20, 1, 9)
         --stop()
-        local vert_world_y = -(terrain_vertex_data[vert_x_id][vert_z_id]&0x000f)*2
+        local vert_world_y = (terrain_vertex_data[vert_x_id][vert_z_id]&0x000f)*2
 
         local vert_world_z = flr(v/num_verts_sector)*tile_size + (mov_tiles_z-flr(num_verts_sector/2 - 1))*tile_size
 
         local vert_camera_x = vert_world_x - cam_x 
-        local vert_camera_y = vert_world_y + cam_y
+        local vert_camera_y = vert_world_y - cam_y
         local vert_camera_z = vert_world_z - cam_z
 
         if(v%num_verts_sector == 0)then  
@@ -295,7 +295,6 @@ function render_terrain()
 
     draw_triangle_list()
     triangle_list = {}
-    
 
     --x[[ PRINT 
         print("웃", trans_proj_verts[num_verts_sector/2 + (num_verts_sector*(num_verts_sector/2- 1))][4]-3, trans_proj_verts[num_verts_sector/2 + (num_verts_sector*(num_verts_sector/2 - 1))][5]-5, 8)
