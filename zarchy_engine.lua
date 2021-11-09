@@ -1,21 +1,19 @@
+--TIME VARS
+last_time = time()
+
 -- TERRAIN SETTINGS
-
--- 0-start
-
 HEIGHT_MULTIPLIER = 2
-terrain_vertex_data = store_terrain_rle_table(explode64("3?3?014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m8%3l89cs833l88c2gqc1833l87c2g2kog1c1833l87c1g2k2omk1g1c1833l86c2g1k2o2sko1k1g1c1833l84c3g2k1o2s2wis1o1k1g1c1833l84c1g3k2o1s2w2!gw1s1o1k1g1c1833l84c1g1k3o2s1w2!2%e!1w1s1o1k1g1c1833l84c1g1k1o3s2w1!2%2(c%1!1w1s1o1k1g1c1833l84c1g1k1o1s3w2!1%2(2+a(1%1!1w1s1o1k1g1c1833l84c1g1k1o1s1w3!2%1(2+2}8+1(1%1!1w1s1o1k1g1c1833l84c1g1k1o1s1w1!3%2(1+2}2<6}1+1(1%1!1w1s1o1k1g1c1833l84c1g1k1o1s1w1!1%3(2+1}2<2/4<1}1+1(1%1!1w1s1o1k1g1c1833l84c1g1k1o1s1w1!1%1(3+2}1<2/5<1}1+1(1%1!1w1s1o1k1g1c1833l84c1g1k1o1s1w1!1%1(1+3}2<1/6<1}1+1(1%1!1w1s1o1k1g1c1833l84c1g1k1o1s1w1!1%1(1+1}3<2/6<1}1+1(1%1!1w1s1o1k1g1c1833l84c1g1k1o1s1w1!1%1(1+1}1<3/7<1}1+1(1%1!1w1s1o1k1g1c1833l84c1g1k1o1s1w1!1%1(1+1}1<1/8<2}1+1(1%1!1w1s1o1k1g1c1833l84c1g1k1o1s1w1!1%1(1+1}1<1/7<2}2+1(1%1!1w1s1o1k1g1c1833l84c1g1k1o1s1w1!1%1(1+1}1<1/6<2}2+2(1%1!1w1s1o1k1g1c1833l84c1g1k1o1s1w1!1%1(1+1}1<1/5<2}2+2(2%1!1w1s1o1k1g1c1833l84c1g1k1o1s1w1!1%1(1+1}1<7}2+2(2%2!1w1s1o1k1g1c1833l84c1g1k1o1s1w1!1%1(1+1}9+2(2%2!2w1s1o1k1g1c1833l84c1g1k1o1s1w1!1%1(1+b(2%2!2w2s1o1k1g1c1833l84c1g1k1o1s1w1!1%1(d%2!2w2s2o1k1g1c1830]4c2m84c1g1k1o1s1w1!1%f!2w2s2o2k1g1c1830[418c412l84c1g1k1o1s1w1!hw2s2o2k2g1c1830=4182ca82432i84c1g1k1o1s1wjs2o2k2g2c1830+4182c1gac184432f84c1g1k1o1slo2k2g2c2830+4181c1g2k8g2c3844f2084c1g1k1onk2g2c2840+4181c1g1k1o8k1g4c38g411|84c1g1kpg2c2850+4181c1g1k1o1s6o2k3g4cf82411~84c1grc2860+4181c1g1k1o1s1w4s2o4k3ggc182411?84ct870+4181c1g1k1o1s1w1!2w2s4o4kfg2c182411/8%0+4181c1g1k1o1s1w1!4w1s6ogk1g2c181411/8%0+4181c1g1k1o1s1w2!3w3sjo2k1g1c181411/8%0+4181c1g1k1o1s2w2!4w1s3w3s6w6s2o1k1g1c181411/8%0+4181c1g1k1o2s1w3!1%1!1w9s1was1o1k1g1c181411/8%0-4182c1g1k1o2s1w3!1%2!1wd!4w2s1o1k1g1c181411/8%0_4182c1g2k1o1s2w3!2%2!6w5!3%2!2w1s1o1k1g1c181411/8%0_4181c1g2k1o2s1w5!1%7!2w4!1%5!1w1s1o1k1g1c181411/014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181410-4181c1g1k1o2s2w4!2%1(6%1!6%5!1w1s1o1k1g1c182411.014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181410-4181c1g1k1o1s2w4!2%1(2+4(2%b!1w1s1o1k1g2c181411.014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181410-4181c1g1k1o1s1w5!1%1(2+1}4+1(8%3!2w1s1o2k1g1c181411.014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181410-4181c1g1k1o1s1w2!4%1(1+1}2<2}2+7(2%2!1w2s2o1k1g1c181411.014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181410-4181c1g1k1o1s1w1!2%3(1+2}1<1/2<1}2+1}5+1(2%1!2w2s1o1k1g1c181411.014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181410-4181c1g1k1o1s1w1!1%2(2+2}2<1/3<1}3<3}2+1(2%1!2w1s1o1k1g1c181411.014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181410-4181c1g1k1o1s1w1!1%1(2+2}2<1/5<3/3<1}2+1(2%1!1w1s1o1k1g1c181411.014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181410-4181c1g1k1o1s1w1!1%1(1+2}2<2/5<1/6<1}2+1(1%1!1w1s1o1k1g1c181411.014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181410-4181c1g1k1o1s1w1!1%1(1+1}2<1/f<1}1+1(1%1!1w1s1o1k1g1c181411.014181c10wc181410-4181c1g1k1o1s1w1!1%1(1+1}1<1/g<1}1+1(1%1!1w1s1o1k1g1c181411.014181c1014u01c181410-4181c1g1k1o1s1w1!1%1(1+1}2<3/b<2}2+1(1%1!1w1s1o1k1g1c181411.014181c101418s4101c181410-4181c1g1k1o1s1w1!1%1(1+2}3<1/9<2}3+1(2%1!1w1s1o1k1g1c181411.014181c1014181cq814101c181410-4181c1g1k1o1s1w1!1%1(2+3}2<1/7<3}1+2(2%1!2w1s1o1k1g1c182411,014181c1014181c1goc1814101c181410-4181c1g1k1o1s1w1!1%2(3+2}1<1/8<2}2+1(1%1!2w2s1o1k1g1c282411>014181c1014181c1g1kmg1c1814101c181410-4181c1g1k1o1s1w1!2%4(1+1}1<1/a<1}1+1(1%1!1w2s2o1k1g3c182411<014181c1014181c1g1k1okk1g1c1814101c181410-4181c1g1k1o1s1w2!4%1(1+1}2<1/8<1}2+1(1%1!1w3s1o2k2g2c182411:014181c1014181c1g1k1o1sio1k1g1c1814101c181410-4181c1g1k1o1s2w4!1%1(2+1}2<3/4<1}2+1(2%1!1w4s1o3k1g2c181411:014181c1014181c1g1k1o1s1wgs1o1k1g1c1814101c181410-4181c1g1k1o2s1w4!2%1(2+1}4<4}2+1(2%1!2w5s2o2k1g1c181411:014181c1014181c1g1k1o1s1w1!ew1s1o1k1g1c1814101c181410-4181c1g1k2o1s2w4!2%1(2+3}6+1(2%1!2w7s2o1k1g1c181411:014181c1014181c1g1k1o1s1w1!1%c!1w1s1o1k1g1c1814101c181410-4181c1g1k2o1s2w3!2%1(6+6(2%1!2w2s3w3s2o1k1g1c181411:014181c1014181c1g1k1o1s1w1!1%1(a%1!1w1s1o1k1g1c1814101c181410_4182c1g1k1o2s1w3!2%1(4%2(2+5(1%1!2w2s2o1s5o2k1g1c181411:014181c1014181c1g1k1o1s1w1!1%1(1+8(1%1!1w1s1o1k1g1c1814101c181410_4181c1g2k1o2s1w3!1%7!1%1(1+4(2%1!1w2s2o8k1g2c181411:014181c1014181c1g1k1o1s1w1!1%1(1+1}6+1(1%1!1w1s1o1k1g1c1814101c181410_4181c1g1k1o2s2w2!1%3!6%1(2+1(3%2!1w1s2o2k7g2c182411:014181c1014181c1g1k1o1s1w1!1%1(1+1}1<4}1+1(1%1!1w1s1o1k1g1c1814101c181410_4181c1g1k1o1s2w2!1%2!8%2(3%3!2w1s1o3k1g7c182411<014181c1014181c1g1k1o1s1w1!1%1(1+1}1<1/2<1}1+1(1%1!1w1s1o1k1g1c1814101c181410_4181c1g1k1o1s1w2!4w5!4%5!3w2s1o2k1g2c682411>014181c1014181c1g1k1o1s1w1!1%1(1+1}1<1/2<1}1+1(1%1!1w1s1o1k1g1c1814101c181410_4181c1g1k1o1s1w1!3w3s3w3!8w3s2o1k1g2c187411,014181c1014181c1g1k1o1s1w1!1%1(1+1}1<4}1+1(1%1!1w1s1o1k1g1c1814101c181410_4181c1g1k1o1s1w2!2w1s3o1s4w9s3o2k1g1c182461.014181c1014181c1g1k1o1s1w1!1%1(1+1}6+1(1%1!1w1s1o1k1g1c1814101c181410_4181c1g1k1o1s2w4s1o6sbo3k1g2c1814121014181c1014181c1g1k1o1s1w1!1%1(1+8(1%1!1w1s1o1k1g1c1814101c181410_4181c1g1k1o2s6o1k4odk2g2c1824121014181c1014181c1g1k1o1s1w1!1%1(a%1!1w1s1o1k1g1c1814101c181410_4181c1g2k1o8k1g3kdg3c1824122014181c1014181c1g1k1o1s1w1!1%c!1w1s1o1k1g1c1814101c181410_4182c1g2k8g2c1gfc2824123014181c1014181c1g1k1o1s1w1!ew1s1o1k1g1c1814101c181410-4182c1gach834124014181c1014181c1g1k1o1s1wgs1o1k1g1c1814101c181410+4182ca8i4225014181c1014181c1g1k1o1sio1k1g1c1814101c181410=418c4h27014181c1014181c1g1k1okk1g1c1814101c181410[4c2o014181c1014181c1g1kmg1c1814101c181413m014181c1014181c1goc1814101c181413m014181c1014181cq814101c181413m014181c101418s4101c181413m014181c1014u01c181413m014181c10wc181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/108/1<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/108/1<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/108/1<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/108/1<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/108/1<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/108/1<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/108/1<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/108/1<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/108/1<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/108/1<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<1/a<1}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}1<c}1+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+1}e+1(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+g(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+g(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+g(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+g(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+g(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+g(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+g(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+g(1%1!1w1s1o1k1g1c181413m014181c1g1k1o1s1w1!1%1(1+g(1%1!1w1s1o1k1g1c181413m04g1k1o1s1w1!1%1(1+g(1%1!1w1s1o1k1g1c181413m04g1k1o1s1w1!1%1(1+g(1%1!1w1s1o1k1g1c181413m04g1k1o1s1w1!1%1(1+g(1%1!1w1s1o1k1g1c181413m04g1k1o1s1w1!1%1(1+g(1%1!1w1s1o1k1g1c181413m", 2,1), 
-
-explode64("3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?3?014101410141014101413]3?014101410141014101413]3?014101410141014101413]3?014101410141014101413]3?014101410141014101413]3?", 2,1),HEIGHT_MULTIPLIER)
-
+terrain_vertex_data = store_terrain_rle_table(explode64(height_map, 2,1), explode64(object_map, 2,1))
 
 terrain_num_verts = #terrain_vertex_data+1 -- HAS TO BE AN ODD NUMBER
 terrain_num_faces = terrain_num_verts-1
 
--- SECTOR SETTINGS
-NUM_SECTORS = 28
+-- MESH SETTINGS
+num_faces_mesh = 13
+num_verts_mesh = num_faces_mesh + 1
 
-num_faces_sector = terrain_num_faces/NUM_SECTORS
-num_verts_sector = num_faces_sector + 1
+-- SECTOR SETTINGS
+NUM_SECTORS = 21
 
 -- TILE SETTING
 tile_size = 10
@@ -41,10 +39,16 @@ player = nil
 mov_tiles_x = 0
 mov_tiles_z = 0
 
+sub_mov_x = 0
+sub_mov_z = 0
+
 -- RENDER STUFF
 to_draw = {}
+
+game_objects3d = {}
+
 terrain_triangle_list = {}
-env_obj_triangle_list= {}
+object3d_triangle_list= {}
 
 -- cam_matrix_transform
 sx=sin(cam_ax)
@@ -63,6 +67,25 @@ cam_mat21=cx*sz*sy-sx*cy
 cam_mat02=sx*sz*cy-cx*sy
 cam_mat12=sx*cz
 cam_mat22=sx*sz*sy+cx*cy
+
+function quicksort(t,start, endi)
+   start, endi = start or 1, endi or #t
+  --partition w.r.t. first element
+  if(endi - start < 1) then return t end
+  local pivot = start
+  for i = start + 1, endi do
+    if t[i].z <= t[pivot].z then
+      if i == pivot + 1 then
+        t[pivot],t[pivot+1] = t[pivot+1],t[pivot]
+      else
+        t[pivot],t[pivot+1],t[i] = t[i],t[pivot],t[pivot+1]
+      end
+      pivot = pivot + 1
+    end
+  end
+   t = quicksort(t, start, pivot - 1)
+  return quicksort(t, pivot + 1, endi)
+end
 
 function rotate_cam_point(x,y,z)
     return (x)*cam_mat00+(y)*cam_mat10+(z)*cam_mat20,(x)*cam_mat01+(y)*cam_mat11+(z)*cam_mat21,(x)*cam_mat02+(y)*cam_mat12+(z)*cam_mat22
@@ -171,34 +194,38 @@ function render_terrain()
     update_view()
 
     local trans_proj_verts = {}
+    local mesh_leftmost_x = (mov_tiles_x-flr(num_verts_mesh/2-1))
+    local mesh_rightmost_x = num_verts_mesh + mesh_leftmost_x - 1
+    local mesh_downmost_z = (mov_tiles_z-flr(num_verts_mesh/2 - 1))
+    local mesh_upmost_z = num_verts_mesh + mesh_downmost_z - 1
 
-    for v=0,(num_verts_sector)*(num_verts_sector)-1 do
-        local vert_x_id=(v%num_verts_sector + (mov_tiles_x-flr(num_verts_sector/2-1)))%terrain_num_verts
-        local vert_z_id=(flr(v/num_verts_sector) + (mov_tiles_z-flr(num_verts_sector/2 - 1)))%terrain_num_verts
+    for v=0,(num_verts_mesh)*(num_verts_mesh)-1 do
+        local vert_x_id=(v%num_verts_mesh + mesh_leftmost_x)%terrain_num_verts
+        local vert_z_id=(flr(v/num_verts_mesh) + mesh_downmost_z)%terrain_num_verts
 
-        local vert_world_x = (v%num_verts_sector)*tile_size + (mov_tiles_x-flr(num_verts_sector/2-1))*tile_size
+        local vert_world_x = (v%num_verts_mesh)*tile_size + mesh_leftmost_x*tile_size
         local vert_world_y = (terrain_vertex_data[vert_x_id][vert_z_id]&0x000f)*2
 
-        local vert_world_z = flr(v/num_verts_sector)*tile_size + (mov_tiles_z-flr(num_verts_sector/2 - 1))*tile_size
+        local vert_world_z = flr(v/num_verts_mesh)*tile_size + mesh_downmost_z*tile_size
 
         local vert_camera_x = vert_world_x - cam_x 
         local vert_camera_y = vert_world_y - cam_y
         local vert_camera_z = vert_world_z - cam_z
 
-        if(v%num_verts_sector == 0)then  
+        if(v%num_verts_mesh == 0)then  
             vert_camera_x+=sub_mov_x*tile_size  
         end
 
-        if(v%num_verts_sector == num_faces_sector)then 
+        if(v%num_verts_mesh == num_faces_mesh)then 
             vert_camera_x+=sub_mov_x*tile_size - tile_size
         end
 
         
-        if(flr(v/num_verts_sector) == 0)then 
+        if(flr(v/num_verts_mesh) == 0)then 
             vert_camera_z+=sub_mov_z*tile_size 
         end
 
-        if(flr(v/num_verts_sector) == num_faces_sector)then 
+        if(flr(v/num_verts_mesh) == num_faces_mesh)then 
             vert_camera_z+=sub_mov_z*tile_size - tile_size
         end
 
@@ -206,41 +233,42 @@ function render_terrain()
 
         proj_x, proj_y = project_point(vert_camera_x, vert_camera_y, vert_camera_z)
         
-        trans_proj_vert = add(trans_proj_verts, {vert_camera_x, vert_camera_y, vert_camera_z, proj_x, proj_y , (terrain_vertex_data[vert_x_id][vert_z_id]&0x000f)})
+        trans_proj_vert = add(trans_proj_verts, {vert_camera_x, vert_camera_y, vert_camera_z, proj_x, proj_y , (terrain_vertex_data[vert_x_id][vert_z_id]&0x000f), vert_x_id, vert_z_id})
 
         --x[[ PRINT VERTEX DATA
-            if(v%num_verts_sector == 0)then 
-                print(tostr(vert_z_id), trans_proj_vert[4]-15, trans_proj_vert[5], 11)
+            if(v%num_verts_mesh == 0)then 
+                print(tostr(vert_z_id), trans_proj_vert[4]-13, trans_proj_vert[5]-2, 11)
             end
 
-            if(flr(v/num_verts_sector) == 0)then 
+            if(flr(v/num_verts_mesh) == 0)then 
                 print(tostr(vert_x_id), trans_proj_vert[4], trans_proj_vert[5]+6, 11)
             end
 
-            if(v%num_verts_sector != 0 and flr(v/num_verts_sector) != 0)then 
-                type_env_obj = (terrain_vertex_data[vert_x_id][vert_z_id]&0x00f0)>>4
-                if(type_env_obj > 0) add(to_draw, create_object3d((terrain_vertex_data[vert_x_id][vert_z_id]&0x00f0)>>4, vert_world_x, vert_world_y, vert_world_z))
+            if(v%num_verts_mesh != 0 and flr(v/num_verts_mesh) != 0)then 
+                type_object3d = (terrain_vertex_data[vert_x_id][vert_z_id]&0x00f0)>>4
+                if(type_object3d > 0) add(to_draw, create_object3d((terrain_vertex_data[vert_x_id][vert_z_id]&0x00f0)>>4, vert_world_x, vert_world_y, vert_world_z))
+            
             end
         --]]
 
         --x[[ PRINT . 
-            print(".", trans_proj_vert[4], trans_proj_vert[5]-3, ((terrain_vertex_data[vert_x_id][vert_z_id]&0x00f0)>>4) + 2)
+            rect( trans_proj_vert[4], trans_proj_vert[5],trans_proj_vert[4], trans_proj_vert[5], ((terrain_vertex_data[vert_x_id][vert_z_id]&0x00f0)>>4) + 2 )
         --]]
         
-        --x[[ PRINT VERTEX DATA
-            --print(vert_camera_y, trans_proj_vert[4], trans_proj_vert[5], 5)
+        --[[ PRINT VERTEX DATA
+            print(vert_world_x, trans_proj_vert[4], trans_proj_vert[5]+3, 5)
         --]]
     end
 
-    print("player_pos: "..player.x..","..player.z,0,10)
-    print("mov_tiles: "..mov_tiles_x..","..mov_tiles_z,0,20)
+    print("player_pos: "..player.x..","..player.z,0,10, 6)
+    print("mov_tiles: "..mov_tiles_x..","..mov_tiles_z,0,20, 6)
 
     for v=#trans_proj_verts,1,-1 do
-        if((v)%num_verts_sector != 0 and v>num_verts_sector-1) then
+        if((v)%num_verts_mesh != 0 and v>num_verts_mesh-1) then
             local p1 = trans_proj_verts[v+1] -- root vertex
             local p3 = trans_proj_verts[v-1+1]
-            local p2 = trans_proj_verts[v - num_verts_sector + 1]
-            local p4 = trans_proj_verts[v -  num_verts_sector]
+            local p2 = trans_proj_verts[v - num_verts_mesh + 1]
+            local p4 = trans_proj_verts[v -  num_verts_mesh]
             
             --[[ WIREFRAME
                 line(p1[4],p1[5], p2[4],p2[5], 7)
@@ -253,8 +281,8 @@ function render_terrain()
             --]]
             
 
-            --[[ PRINT 
-                print(".", p1[4],p1[5]-3, 8)
+            --x[[ PRINT 
+                rect( p1[4],p1[5],p1[4],p1[5], 8 )
                 --print(v, p1[4],p1[5]-3, 8)
             --]]
 
@@ -274,8 +302,11 @@ function render_terrain()
             local s2x,s2y = p2[4],p2[5]
             local s3x,s3y = p3[4],p3[5]
             local s4x,s4y = p4[4],p4[5]
+            srand(p1[7]*p1[8])
+            local color = height_color_map[p1[6]][(p1[7]%2+p1[8]%2+flr((rnd(2))))%2 +1]
 
             --x[[
+                
             if(( (s1x-s2x)*(s4y-s2y)-(s1y-s2y)*(s4x-s2x)) < 0)then
                 add(terrain_triangle_list,{
                     s1x,
@@ -284,7 +315,7 @@ function render_terrain()
                     s2y,
                     s4x,
                     s4y,
-                    p2[6],
+                    color,
                     fade_out})
             end
 
@@ -296,7 +327,7 @@ function render_terrain()
                     s3y,
                     s1x,
                     s1y,
-                    p2[6],
+                    color,
                     fade_out})
             end
             --]]
@@ -309,24 +340,30 @@ function render_terrain()
     draw_tri_list(terrain_triangle_list)
     terrain_triangle_list = {}
 
-    --draw_tri_list(env_obj_triangle_list)
-    
-    --quicksort(to_draw)
+    --draw_tri_list(object3d_triangle_list)
 
-   -- print(to_draw[1].t_verts[2][1], 9)
-    --stop()
+    for i=#game_objects3d,1,-1 do
+        game_objects3d[i]:update(i)
 
-    for i=#to_draw, 1, -1 do
-        to_draw[i].render(to_draw[i])
+        obj_tx = game_objects3d[i].x + ceil(mov_tiles_x/(terrain_num_verts)-0.5) * terrain_num_verts * tile_size
+        obj_tz = game_objects3d[i].z + ceil(mov_tiles_z/(terrain_num_verts)-0.5) * terrain_num_verts * tile_size
+
+        if(obj_tx > mesh_leftmost_x*tile_size and obj_tx < mesh_rightmost_x*tile_size and obj_tz > mesh_downmost_z*tile_size and obj_tz < mesh_upmost_z*tile_size) add(to_draw, game_objects3d[i])
     end
 
-    draw_tri_list(env_obj_triangle_list)
+    quicksort(to_draw)
 
-    env_obj_triangle_list = {}
+    for i=#to_draw, 1, -1 do
+        to_draw[i]:draw()
+    end
+
+    draw_tri_list(object3d_triangle_list)
+
+    object3d_triangle_list = {}
     to_draw = {}
 
     --x[[ PRINT 
-        print("웃", trans_proj_verts[num_verts_sector/2 + (num_verts_sector*(num_verts_sector/2- 1))][4]-3, trans_proj_verts[num_verts_sector/2 + (num_verts_sector*(num_verts_sector/2 - 1))][5]-5, 8)
+        print("웃", trans_proj_verts[71][4]-3, trans_proj_verts[71][5]-5, 8)
     --]]
 end
 
@@ -370,7 +407,7 @@ function draw_object3d(object)
 					--only use backface culling on simple option without clipping
 					--check if triangles are backwards by cross of two vectors
 					if(( (s1x-s2x)*(s3y-s2y)-(s1y-s2y)*(s3x-s2x)) < 0)then
-						add(env_obj_triangle_list,{
+						add(object3d_triangle_list,{
                             s1x,
 							s1y,
 							s2x,
@@ -385,37 +422,80 @@ function draw_object3d(object)
     end
 end
 
-function create_object3d(type, x,y,z)
-    env_obj = {}
 
-    env_obj.verts = env_objs[type][2]
+function create_sprite3d(x,y,z,draw_func,life_span) 
+    sprite3d = {}
+
+    sprite3d.x, sprite3d.y, sprite3d.z = x,y,z
+    sprite3d.sx, sprite3d.sy = 0,0
+
+    sprite3d.life_span = life_span or nil
     
-    env_obj.tris = env_objs[type][3]
+    update_sprite3d(sprite3d)
 
-    env_obj.ax = 0
-    env_obj.ay = 0
-    env_obj.az = 0
+    sprite3d.draw = draw_func
+    sprite3d.update = update_sprite3d
 
-    env_obj.x = x
-    env_obj.y = y
-    env_obj.z = z
+    return sprite3d
+end
 
-    env_obj.t_verts={}
+function create_object3d(obj_id,x,y,z)
+    object3d = {}
 
-    for i=1,#env_obj.verts do
-        env_obj.t_verts[i]={}
+    object3d.verts = objs_data[obj_id][1]
+    object3d.tris = objs_data[obj_id][2]
+
+    object3d.ax = 0
+    object3d.ay = 0
+    object3d.az = 0
+
+    object3d.x = x
+    object3d.y = y
+    object3d.z = z
+
+    object3d.t_verts={}
+
+    for i=1,#object3d.verts do
+        object3d.t_verts[i]={}
         for j=1,3 do
-            env_obj.t_verts[i][j]=env_obj.verts[i][j]
+            object3d.t_verts[i][j]=object3d.verts[i][j]
         end
     end
 
+    update_object3d(object3d)
 
-    transform_object(env_obj)
-    cam_transform_object(env_obj)
+    object3d.draw = draw_object3d
+    object3d.update = update_object3d
 
-    env_obj.render = draw_object3d
+    return object3d
+end
 
-    return env_obj
+function update_sprite3d(sprite, index)
+    if sprite.life_span != nil then
+        sprite.life_span -= time() - last_time
+        
+        if(sprite.life_span < 0) then
+            deli(game_objects3d, index)
+        end
+    end
+ 
+    local vert_x, vert_y, vert_z = sprite.x + ceil(mov_tiles_x/(terrain_num_verts)-0.5) * terrain_num_verts * tile_size, sprite.y, sprite.z
+    vert_x -= cam_x 
+    vert_y -= cam_y 
+    vert_z -= cam_z
+
+    vert_x, vert_y, vert_z=rotate_cam_point(vert_x, vert_y, vert_z)
+    
+    --print(vert_x)
+    --print(vert_z)
+    sprite.sx= vert_x*k_screen_scale/vert_z+k_x_center
+    sprite.sy= vert_y*k_screen_scale/vert_z+k_x_center
+end
+
+function update_object3d(object3d)
+    --object3d.x = 255*10
+    transform_object(object3d)
+    cam_transform_object(object3d)
 end
 
 function cam_transform_object(object)
