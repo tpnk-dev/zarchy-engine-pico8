@@ -1,14 +1,14 @@
 -- spellcaster's base64 decoder and table storer | 279 TOKENS 
 base64str='0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()_-+=[]}{;:<>,./?~|'
 
-function explode64(s)
- local retval,lastpos,i = {},1,2
+function explode64(s, step, size)
+ local retval,lastpos,i = {},1,step
  
  while i <= #s do
   add(retval,base64decode(sub(s, lastpos, i)))
   
   lastpos = i+1
-  i += 2
+  i += step
  end
  return retval
 end
@@ -30,7 +30,7 @@ function base64decode(str)
  return val
 end
 
-function store_terrain_rle_table(table_heights, table_objs, multiplier)
+function store_terrain_rle_table(table_heights, table_objs)
     local x,y,i,w=table_heights[1]-1,0,3,table_heights[1]
     local temp = {}
 
@@ -58,16 +58,16 @@ function store_terrain_rle_table(table_heights, table_objs, multiplier)
             x = table_heights[1]-1
             y += 1
         end
-
-        --print(stat(0))
     end
 
     x,y,i,w=table_objs[1]-1,0,3,table_objs[1]
 
     for i=#table_objs,3,-1 do
         local t=table_objs[i]
+
         local col,rle = (t& 0x0f00)>>4
                         ,t& 0xff
+
         
         for p=0, rle-1 do
             temp[x-p][y] = col&0x00f0 | temp[x-p][y]
@@ -78,9 +78,9 @@ function store_terrain_rle_table(table_heights, table_objs, multiplier)
         if x < 0 then
             x = table_objs[1]-1
             y += 1
+            
         end
     end
 
-    
     return temp
 end
