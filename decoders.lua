@@ -30,57 +30,66 @@ function base64decode(str)
  return val
 end
 
-function store_terrain_rle_table(table_heights, table_objs)
-    local x,y,i,w=table_heights[1]-1,0,3,table_heights[1]
-    local temp = {}
+function init_t(t_256)
+    w = peek(0)+1
+    h = peek(1)+1
 
-    -- FReDs71 idea
-    -- 0x000f height info
-    -- 0x00f0 object info
-    -- 0x0f00 virus level
-
-    for s=0, table_heights[1]-1 do
-        temp[s] = {}
-    end
-
-    for i=#table_heights,3,-1 do
-        local t=table_heights[i]
-        local col,rle = (t& 0x0f00)>>8
-                        ,t& 0xff
-
-        for p=0, rle-1 do
-            temp[x-p][y] = col&0x000f
-        end
-        
-        x-=rle
-        
-        if x < 0 then
-            x = table_heights[1]-1
-            y += 1
+    t_mesh = {}
+    for i=0,w-1 do
+        t_mesh[i] = {}
+        for j=0,(h*2)-1 do
+            t_mesh[i][j] = 0
         end
     end
 
-    x,y,i,w=table_objs[1]-1,0,3,table_objs[1]
+    c_index = 0
+    r_index = 0
 
-    for i=#table_objs,3,-1 do
-        local t=table_objs[i]
+    rep_count = 1
+    shift = 1
+    test = {}
+    esc = false
 
-        local col,rle = (t& 0x0f00)>>4
-                        ,t& 0xff
+    cls()
 
-        
-        for p=0, rle-1 do
-            temp[x-p][y] = col&0x00f0 | temp[x-p][y]
-        end
-        
-        x-=rle
-        
-        if x < 0 then
-            x = table_objs[1]-1
-            y += 1
-            
+    function up_indices()
+        c_index += 1
+        if(c_index == w) then
+            c_index = 0
+            r_index += 1
         end
     end
 
-    return temp
+    for i=2, 13656  do
+        -- rle true
+        if((peek(i)&0x80)>>7 == 1) then
+            rep_count += peek(i)&0x7f            
+        else
+            for z=1, rep_count do
+                t_mesh[c_index][(h-1)-r_index+ h] = (sgn(((peek(i)&0x0020)) * -1) * ((peek(i)&0x0018)>>3) + t_mesh[(c_index-1)%(w-1)][(h-1)-r_index + h])&0x00ff
+                t_mesh[(w-1)-c_index][h+(h-((h-1)-r_index+h))] = t_mesh[c_index][(h-1)-r_index+h]
+
+                pset(c_index,r_index , t_mesh[c_index][(h-1)-r_index])
+                pset((w-1)-c_index,(h-1)-r_index + h , t_mesh[c_index][(h-1)-r_index])
+                up_indices()
+                if(r_index > (h-1)) esc=true break
+
+            end 
+
+            if(esc) break
+
+            t_mesh[c_index][(h-1)-r_index+ h] = ( sgn(((peek(i)&0x0004)) * -1) * (peek(i)&0x0003) + t_mesh[(c_index-1)%(w-1)][(h-1)-r_index+ h])&0x00ff
+            t_mesh[(w-1)-c_index][h+(h-((h-1)-r_index+h))] = t_mesh[c_index][(h-1)-r_index+h]
+
+            pset(c_index,r_index , t_mesh[c_index][(h-1)-r_index])
+            pset((w-1)-c_index,(h-1)-r_index + h , t_mesh[c_index][(h-1)-r_index])
+
+            up_indices()
+            rep_count = 1
+
+            --stop()
+        end
+        
+    end
+    --stop()
 end
