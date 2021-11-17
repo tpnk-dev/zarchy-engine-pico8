@@ -3,9 +3,10 @@ last_time = time()
 
 -- TERRAIN SETTINGS
 HEIGHT_MULTIPLIER = 2
-terrain_vertex_data = store_terrain_rle_table(explode64(height_map, 2,1), explode64(object_map, 2,1))
+t_mesh = nil
+init_t(t_256)
 
-terrain_num_verts = #terrain_vertex_data+1 -- HAS TO BE AN ODD NUMBER
+terrain_num_verts = #t_mesh+1 -- HAS TO BE AN ODD NUMBER
 terrain_num_faces = terrain_num_verts-1
 
 -- MESH SETTINGS
@@ -204,7 +205,7 @@ function render_terrain()
         local vert_z_id=(flr(v/num_verts_mesh) + mesh_downmost_z)%terrain_num_verts
 
         local vert_world_x = (v%num_verts_mesh)*tile_size + mesh_leftmost_x*tile_size
-        local vert_world_y = (terrain_vertex_data[vert_x_id][vert_z_id]&0x000f)*2
+        local vert_world_y = (t_mesh[vert_x_id][vert_z_id]&0x00ff) * 2
 
         local vert_world_z = flr(v/num_verts_mesh)*tile_size + mesh_downmost_z*tile_size
 
@@ -233,7 +234,7 @@ function render_terrain()
 
         proj_x, proj_y = project_point(vert_camera_x, vert_camera_y, vert_camera_z)
         
-        trans_proj_vert = add(trans_proj_verts, {vert_camera_x, vert_camera_y, vert_camera_z, proj_x, proj_y , (terrain_vertex_data[vert_x_id][vert_z_id]&0x000f), vert_x_id, vert_z_id})
+        trans_proj_vert = add(trans_proj_verts, {vert_camera_x, vert_camera_y, vert_camera_z, proj_x, proj_y , (t_mesh[vert_x_id][vert_z_id]&0x00ff), vert_x_id, vert_z_id})
 
         --x[[ PRINT VERTEX DATA
             if(v%num_verts_mesh == 0)then 
@@ -245,14 +246,14 @@ function render_terrain()
             end
 
             if(v%num_verts_mesh != 0 and flr(v/num_verts_mesh) != 0)then 
-                type_object3d = (terrain_vertex_data[vert_x_id][vert_z_id]&0x00f0)>>4
-                if(type_object3d > 0) add(to_draw, create_object3d((terrain_vertex_data[vert_x_id][vert_z_id]&0x00f0)>>4, vert_world_x, vert_world_y, vert_world_z))
+                type_object3d = (t_mesh[vert_x_id][vert_z_id]&0x00f0)>>4
+                --if(type_object3d > 0) add(to_draw, create_object3d((t_mesh[vert_x_id][vert_z_id]&0x0f00)>>4, vert_world_x, vert_world_y, vert_world_z))
             
             end
         --]]
 
         --x[[ PRINT . 
-            rect( trans_proj_vert[4], trans_proj_vert[5],trans_proj_vert[4], trans_proj_vert[5], ((terrain_vertex_data[vert_x_id][vert_z_id]&0x00f0)>>4) + 2 )
+            rect( trans_proj_vert[4], trans_proj_vert[5],trans_proj_vert[4], trans_proj_vert[5], ((t_mesh[vert_x_id][vert_z_id]&0x0f00)>>4) + 2 )
         --]]
         
         --[[ PRINT VERTEX DATA
@@ -304,6 +305,7 @@ function render_terrain()
             local s4x,s4y = p4[4],p4[5]
             srand(p1[7]*p1[8])
             local color = height_color_map[p1[6]][(p1[7]%2+p1[8]%2+flr((rnd(2))))%2 +1]
+            --local color = t_mesh[p1[7]][p1[8]]
 
             --x[[
                 
@@ -363,7 +365,7 @@ function render_terrain()
     to_draw = {}
 
     --x[[ PRINT 
-        print("웃", trans_proj_verts[71][4]-3, trans_proj_verts[71][5]-5, 8)
+        print("웃", trans_proj_verts[77][4]-3, trans_proj_verts[71][5]-5, 8)
     --]]
 end
 
