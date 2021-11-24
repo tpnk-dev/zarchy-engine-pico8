@@ -1,13 +1,14 @@
---marcospiv
---tpnk_dev
---UPPER CASE ARE CONSTANTS, REPLACE WITH DEFINITIVE VALUE IN  FINAL CODE
+-- @marcospiv's 'ZARCHY' engine - 2021
+-- 2390 tokens
+-- tpnk_dev
+-- UPPER CASE ARE CONSTANTS, REPLACE WITH DEFINITIVE VALUE IN  FINAL CODE
 
 --TIME VARS
 lasttime=time()
 -- TILE SETTING
 TILE_SIZE=10
 -- TERRAIN SETTINGS
-HEIGHTMULTIPLIER,terrainmesh=3, nil
+HEIGHTMULTIPLIER,terrainmesh=3,{}
 init_terrain(t_256)
 terrain_numverts=#terrainmesh+1 -- HAS TO BE AN ODD NUMBER
 terrain_numfaces=terrain_numverts-1
