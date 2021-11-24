@@ -1,56 +1,21 @@
--- spellcaster's base64 decoder and table storer | 279 TOKENS 
-base64str='0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()_-+=[]}{;:<>,./?~|'
+-- terrain/models decoder
+-- 702 tokens
 
-function explode64(s, step, size)
- local retval,lastpos,i = {},1,step
- 
- while i <= #s do
-  add(retval,base64decode(sub(s, lastpos, i)))
-  
-  lastpos = i+1
-  i += step
- end
- return retval
-end
-
-
-function base64decode(str)
- val=0
- for i=1,#str do
-  c=sub(str,i,i)
-  for a=1,#base64str do
-   v=sub(base64str,a,a)
-   if c==v then
-    val *= 64
-    val += a-1
-    break
-   end
-  end
- end
- return val
-end
-
-function init_t(t_256)
+function init_terrain(t_256)
     w = peek(0)+1
     h = peek(1)+1
-
-    t_mesh = {}
+ 
     for i=0,w-1 do
-        t_mesh[i] = {}
-        for j=0,(h*2)-1 do
-            t_mesh[i][j] = 0
+        terrainmesh[i] = {}
+        for j=0,h-1 do
+            terrainmesh[i][j] = 0
         end
     end
 
-    c_index = 0
-    r_index = 0
-
-    rep_count = 1
-    shift = 1
-    test = {}
-    esc = false
-
-    cls()
+    local c_index = 0
+    local r_index = 0
+    local rep_count = 1
+    local esc = false
 
     function up_indices()
         c_index += 1
@@ -60,36 +25,81 @@ function init_t(t_256)
         end
     end
 
-    for i=2, 13656  do
-        -- rle true
+    for i=2, 5342  do
         if((peek(i)&0x80)>>7 == 1) then
             rep_count += peek(i)&0x7f            
         else
             for z=1, rep_count do
-                t_mesh[c_index][(h-1)-r_index+ h] = (sgn(((peek(i)&0x0020)) * -1) * ((peek(i)&0x0018)>>3) + t_mesh[(c_index-1)%(w-1)][(h-1)-r_index + h])&0x00ff
-                t_mesh[(w-1)-c_index][h+(h-((h-1)-r_index+h))] = t_mesh[c_index][(h-1)-r_index+h]
+                terrainmesh[c_index][(h-1)-r_index] = (peek(i)&0x0030)>>4
 
-                pset(c_index,r_index , t_mesh[c_index][(h-1)-r_index])
-                pset((w-1)-c_index,(h-1)-r_index + h , t_mesh[c_index][(h-1)-r_index])
                 up_indices()
-                if(r_index > (h-1)) esc=true break
-
             end 
-
-            if(esc) break
-
-            t_mesh[c_index][(h-1)-r_index+ h] = ( sgn(((peek(i)&0x0004)) * -1) * (peek(i)&0x0003) + t_mesh[(c_index-1)%(w-1)][(h-1)-r_index+ h])&0x00ff
-            t_mesh[(w-1)-c_index][h+(h-((h-1)-r_index+h))] = t_mesh[c_index][(h-1)-r_index+h]
-
-            pset(c_index,r_index , t_mesh[c_index][(h-1)-r_index])
-            pset((w-1)-c_index,(h-1)-r_index + h , t_mesh[c_index][(h-1)-r_index])
-
+            terrainmesh[c_index][(h-1)-r_index] = (peek(i)&0x000c)>>2
+            up_indices()
+            terrainmesh[c_index][(h-1)-r_index] = peek(i)&0x0003
             up_indices()
             rep_count = 1
-
-            --stop()
         end
-        
     end
-    --stop()
+
+    for z=0,2 do --9
+        for j=0,h-1 do 
+            for i=0, w-1 do
+                if(terrainmesh[i][j] >= 0) then terrainmesh[i][j] = ((
+                                                            terrainmesh[(i-1)%w][(j+1)%h] + terrainmesh[i][(j+1)%h] * 2     + terrainmesh[(i+1)%w][(j+1)%h]*2 +
+                                                            terrainmesh[(i-1)%w][j]* 3 + terrainmesh[i][j]       * 4 + terrainmesh[(i+1)%w][j]*2 +
+                                                            terrainmesh[(i-1)%w][(j-1)%h] + terrainmesh[i][(j-1)%h] * 2 + terrainmesh[(i+1)%w][(j-1)%h]
+                                                        )/14)&0x00ff.ffff end
+                --[[ DEBUG DRAW TERRAIN
+                    pset(i,j, terrainmesh[i][j])
+                --]]
+            end
+        end
+
+        for i=0,w-1 do 
+            for j=0, h-1 do
+                if(terrainmesh[i][j] >= 0) then terrainmesh[i][j] = ((
+                                                            terrainmesh[(i-1)%w][(j+1)%h] * 3 + terrainmesh[i][(j+1)%h] + terrainmesh[(i+1)%w][(j+1)%h] +
+                                                            terrainmesh[(i-1)%w][j]       * 2 + terrainmesh[i][j]       * 5 + terrainmesh[(i+1)%w][j]*2 +
+                                                            terrainmesh[(i-1)%w][(j-1)%h] + terrainmesh[i][(j-1)%h] *3 + terrainmesh[(i+1)%w][(j-1)%h] 
+                                                        )/14)&0x00ff.ffff end
+                --[[ DEBUG DRAW TERRAIN
+                    pset(i,j, terrainmesh[i][j])
+                --]]
+            end
+        end
+    end
+
+
+    -- stupid fix for edges
+    for j=0,h-1 do
+        terrainmesh[0][j] = (terrainmesh[1][j]*2+terrainmesh[w-1][j])/3
+    end
+
+    for i=0,w-1 do
+        terrainmesh[i][0] = (terrainmesh[i][h-1]*2+terrainmesh[i][1])/3
+    end
+
+    c_index = 0
+    r_index = 0
+    rep_count = 1
+    esc = false
+
+    for i=5343, 6685  do
+        if((peek(i)&0x80)>>7 == 1) then
+            rep_count += peek(i)&0x7f            
+        else
+            for z=1, rep_count do
+                terrainmesh[c_index][(h-1)-r_index] |= ((peek(i)&0x0030)<<4)&0x0f00
+                up_indices()
+                if(r_index > (h-1)) esc=true break
+            end 
+            if(esc) break
+            terrainmesh[c_index][(h-1)-r_index] |= ((peek(i)&0x000c)<<6)&0x0f00
+            up_indices()
+            terrainmesh[c_index][(h-1)-r_index] |= ((peek(i)&0x0003)<<8)&0x0f00
+            up_indices()
+            rep_count = 1
+        end
+    end
 end
