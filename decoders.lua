@@ -1,6 +1,10 @@
 -- terrain/models decoder
 -- 854 tokens
 
+NUM_PASSES = 3
+TERRAIN_MEMLOC_START = 5342
+OBJS_MEMLOC_END = 6685
+
 function init_terrain(t_256)
     w = peek(0)+1
     h = peek(1)+1
@@ -25,7 +29,7 @@ function init_terrain(t_256)
         end
     end
 
-    for i=2, 5342  do
+    for i=2, TERRAIN_MEMLOC_START  do
         if((peek(i)&0x80)>>7 == 1) then
             rep_count += peek(i)&0x7f            
         else
@@ -42,7 +46,7 @@ function init_terrain(t_256)
         end
     end
 
-    for z=0,2 do --9
+    for z=0,NUM_PASSES do --9
         for j=0,h-1 do 
             for i=0, w-1 do
                 if(terrainmesh[i][j] >= 0) then terrainmesh[i][j] = ((
@@ -85,7 +89,7 @@ function init_terrain(t_256)
     rep_count = 1
     esc = false
 
-    for i=5343, 6685  do
+    for i=TERRAIN_MEMLOC_START+1, OBJS_MEMLOC_END  do
         if((peek(i)&0x80)>>7 == 1) then
             rep_count += peek(i)&0x7f            
         else
