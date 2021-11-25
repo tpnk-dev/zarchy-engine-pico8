@@ -4,6 +4,10 @@
 player = {x=0,y=0,z=0}
 test_ay = 0
 test_ax = 0
+
+-- these are the object ids in the scene, use return_model with the correct memory position to add new models
+OBJS_DATA = {decode_model(6685), decode_model(6730)}
+
 function game_init()
     pal(1, 140, 1)
     pal(13, 134,1)
@@ -64,6 +68,7 @@ function logic_update()
     cam_y = 25 + t_height_player
 
     -- logic update objects in terrain
+    
     update_terrain()
     lasttime = time()
 end

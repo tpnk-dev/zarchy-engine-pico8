@@ -1,5 +1,5 @@
 -- terrain/models decoder
--- 702 tokens
+-- 854 tokens
 
 function init_terrain(t_256)
     w = peek(0)+1
@@ -103,3 +103,23 @@ function init_terrain(t_256)
         end
     end
 end
+
+function decode_model(memloc)
+    --verts
+    v_memloc = memloc + 1
+    size_v = peek(memloc)
+    size_f = peek(v_memloc+size_v)
+    f_memloc = v_memloc+size_v+1
+    x_memloc = f_memloc+ size_f
+
+    verts = {}
+    for p=0, size_v-3, 3 do add(verts, {peek(v_memloc+p) - peek(x_memloc) , peek(v_memloc+p+1) - peek(x_memloc+1), peek(v_memloc+p+2) - peek(x_memloc+2)}) end   
+    
+    faces = {}
+    for p=0, size_f-4, 4 do add(faces, {peek(f_memloc+p), peek(f_memloc+p+1), peek(f_memloc+p+2), peek(f_memloc+p+3)}) end 
+
+    xtra = {peek(x_memloc), peek(x_memloc+1), peek(x_memloc+2), peek(x_memloc+3)}
+    
+    return {verts,faces,xtra}
+end
+

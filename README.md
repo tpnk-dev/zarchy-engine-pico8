@@ -1,2 +1,2 @@
-# prion-pico-8
-A zarch demake
+# zarchy-engine
+An engine just like the one for the game zarch/virus

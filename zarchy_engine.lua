@@ -1,5 +1,5 @@
 -- @marcospiv's 'ZARCHY' engine - 2021
--- 2390 tokens
+-- 2488 tokens
 -- tpnk_dev
 -- UPPER CASE ARE CONSTANTS. ONLY MODIFY THEM, UNLESS YOU KNOW WHAT YOU ARE DOING. REPLACE WITH FINAL VALUE IN PRODUCTION CODE.
 
@@ -13,6 +13,7 @@ init_terrain(t_256)
 terrain_numverts=#terrainmesh+1 -- HAS TO BE AN ODD NUMBER
 terrain_numfaces=terrain_numverts-1
 terrain_size=terrain_numverts*TILE_SIZE
+rnd_dirt = {11,3,4,13,15}
 -- MESH SETTINGS
 mesh_numfaces=11
 mesh_numverts=mesh_numfaces + 1
@@ -32,6 +33,7 @@ to_draw, game_objects3d={},{}
 -- cam_matrix_transform
 sx,sy,sz,cx,cy,cz=sin(cam_ax),sin(cam_ay),sin(cam_az),cos(cam_ax),cos(cam_ay),cos(cam_az)
 cam_mat00,cam_mat10,cam_mat20,cam_mat01,cam_mat11,cam_mat21,cam_mat02,cam_mat12,cam_mat22=cz*cy,-sz,cz*sy,cx*sz*cy+sx*sy,cx*cz,cx*sz*sy-sx*cy,sx*sz*cy-cx*sy,sx*cz,sx*sz*sy+cx*cy
+
 
 function get_tileid(pos) 
     return pos\TILE_SIZE
@@ -245,7 +247,7 @@ function render_terrain()
             if(type_object3d > 0) add(to_draw, create_object3d(get_type_id(vert_x_id, vert_z_id), vert_world_x, vert_world_y, vert_world_z, rnd(0.1)+time()))
         end
 
-        --[[ DEBUG PRINT VERTEX DATA
+        --x[[ DEBUG PRINT VERTEX DATA
             if(v%mesh_numverts == 0)then 
                 print(tostr(vert_z_id), trans_proj_vert[4]-13, trans_proj_vert[5]-2, 11)
             end
@@ -264,7 +266,7 @@ function render_terrain()
         --]]
     end
 
-    --[[ DEBUG PRINT POS&COORDS
+    --x[[ DEBUG PRINT POS&COORDS
         print("player_pos: "..player.x..","..player.z,40,10, 6)
         print("mov_tiles: "..mov_tiles_x..","..mov_tiles_z,40,20, 6)
 
@@ -411,7 +413,7 @@ function update_terrain()
         if object.life_span != nil and i != nil then
             object.life_span -= time() - lasttime
             if(object.life_span < 0) then
-                deli(game_objects3d, index)
+                deli(game_objects3d, i)
                 return false
             end
         end
@@ -467,8 +469,8 @@ function create_object3d(obj_id,x,y,z,ay,ax,update_func,start_func,vx,vy,vz)
         vy = vy or 0,
         vx = vx or 0,
         vz = vz or 0,
-        verts = objs_data[obj_id][1],
-        tris = objs_data[obj_id][2],
+        verts = OBJS_DATA[obj_id][1],
+        tris = OBJS_DATA[obj_id][2],
         d_x = 0,
         d_z = 0,
         t_verts={},
