@@ -244,7 +244,7 @@ function render_terrain()
         if(v%mesh_numverts != 0 and v%mesh_numverts < mesh_numverts-1 and v\mesh_numverts != 0)then 
             type_object3d = get_type_id(vert_x_id, vert_z_id)
             srand(vert_x_id)
-            if(type_object3d > 0) add(to_draw, create_object3d(get_type_id(vert_x_id, vert_z_id), vert_world_x, vert_world_y, vert_world_z, rnd(0.1)+time()))
+            if(type_object3d > 0) add(to_draw, create_object3d(get_type_id(vert_x_id, vert_z_id), vert_world_x, vert_world_y, vert_world_z, rnd(0.1)))
         end
 
         --x[[ DEBUG PRINT VERTEX DATA
