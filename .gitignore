@@ -40,6 +40,5 @@ luac.out
 *.hex
 
 # Source folder
-source
 notes.txt
 
