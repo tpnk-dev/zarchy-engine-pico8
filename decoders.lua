@@ -1,7 +1,7 @@
 -- terrain/models decoder
 -- 854 tokens
 
-NUM_PASSES = -1
+NUM_PASSES = 4
 TERRAIN_MEMLOC_START = 5342
 OBJS_MEMLOC_END = 6685
 
@@ -56,7 +56,7 @@ function init_terrain(t_256)
                                                             terrainmesh[(i-1)%w][(j+1)%h] + terrainmesh[i][(j+1)%h] * 2     + terrainmesh[(i+1)%w][(j+1)%h]*2 +
                                                             terrainmesh[(i-1)%w][j]* 3 + terrainmesh[i][j]       * 4 + terrainmesh[(i+1)%w][j]*2 +
                                                             terrainmesh[(i-1)%w][(j-1)%h] + terrainmesh[i][(j-1)%h] * 2 + terrainmesh[(i+1)%w][(j-1)%h]
-                                                        )/13.5)&0x00ff.ffff end
+                                                        )/14)&0x00ff.ffff end
                 --x[[ DEBUG DRAW TERRAIN
                     pset(i+test_j,j+10, terrainmesh[i][j])
                 --]]
@@ -69,7 +69,7 @@ function init_terrain(t_256)
                                                             terrainmesh[(i-1)%w][(j+1)%h] + terrainmesh[i][(j+1)%h] * 2     + terrainmesh[(i+1)%w][(j+1)%h]*2 +
                                                             terrainmesh[(i-1)%w][j]* 3 + terrainmesh[i][j]       * 4 + terrainmesh[(i+1)%w][j]*2 +
                                                             terrainmesh[(i-1)%w][(j-1)%h] + terrainmesh[i][(j-1)%h] * 2 + terrainmesh[(i+1)%w][(j-1)%h]
-                                                        )/13.5)&0x00ff.ffff end
+                                                        )/14)&0x00ff.ffff end
                 --x[[ DEBUG DRAW TERRAIN
                     pset(i+test_j,j+10, terrainmesh[i][j])
                 --]]
