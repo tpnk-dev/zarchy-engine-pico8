@@ -3,37 +3,44 @@
 -- tpnk_dev
 -- UPPER CASE ARE CONSTANTS. ONLY MODIFY THEM, UNLESS YOU KNOW WHAT YOU ARE DOING. REPLACE WITH FINAL VALUE IN PRODUCTION CODE.
 
---TIME VARS
-lasttime=time()
--- TILE SETTING
-TILE_SIZE=10
--- TERRAIN SETTINGS
-HEIGHTMULTIPLIER,terrainmesh=3,{}
-init_terrain(t_256)
-terrain_numverts=#terrainmesh+1 -- HAS TO BE AN ODD NUMBER
-terrain_numfaces=terrain_numverts-1
-terrain_size=terrain_numverts*TILE_SIZE
-rnd_dirt = {11,3,4,13,15}
--- MESH SETTINGS
-mesh_numfaces=11
-mesh_numverts=mesh_numfaces + 1
-mesh_leftmost_x,mesh_rightmost_x,mesh_upmost_z,mesh_downmost_z=0,0,0,0
--- SECTOR SETTINGS
-NUMSECTS=17 --terrain_numfaces MUST BE DIVISIBLE BY THIS!
-sector_numfaces=terrain_numfaces/NUMSECTS
--- PROJECTION SETTINGS
-K_SCREEN_SCALE,K_X_CENTER,K_Y_CENTER,Z_CLIP,Z_MAX=80,63,63,-3,-300
--- CAMERA SETTINGS
-cam_x,cam_y,cam_z, CAM_DIST_TERRAIN=0,0,0,110
-cam_ax,cam_ay,cam_az = 0,0.5,0
--- PLAYER GLOBAL PARAMS
-player, mov_tiles_x,mov_tiles_z,sub_mov_x,sub_mov_z,t_height_player=nil,0,0,0,0,0
--- RENDER STUFF
-to_draw, game_objects3d={},{}
--- cam_matrix_transform
-sx,sy,sz,cx,cy,cz=sin(cam_ax),sin(cam_ay),sin(cam_az),cos(cam_ax),cos(cam_ay),cos(cam_az)
-cam_mat00,cam_mat10,cam_mat20,cam_mat01,cam_mat11,cam_mat21,cam_mat02,cam_mat12,cam_mat22=cz*cy,-sz,cz*sy,cx*sz*cy+sx*sy,cx*cz,cx*sz*sy-sx*cy,sx*sz*cy-cx*sy,sx*cz,sx*sz*sy+cx*cy
+function init_engine()
+    --TIME VARS
+    lasttime=time()
+    -- TILE SETTING
+    TILE_SIZE=10
+    -- TERRAIN SETTINGS
+    HEIGHTMULTIPLIER,terrainmesh=3,{}
+    init_terrain(t_256)
+    terrain_numverts=#terrainmesh+1 -- HAS TO BE AN ODD NUMBER
+    terrain_numfaces=terrain_numverts-1
+    terrain_size=terrain_numverts*TILE_SIZE
+    rnd_dirt = {11,3,4,13,15}
+    -- MESH SETTINGS
+    mesh_numfaces=11
+    mesh_numverts=mesh_numfaces + 1
+    mesh_leftmost_x,mesh_rightmost_x,mesh_upmost_z,mesh_downmost_z=0,0,0,0
+    -- SECTOR SETTINGS
+    NUMSECTS=15 --terrain_numfaces MUST BE DIVISIBLE BY THIS!
+    sector_numfaces=terrain_numfaces/NUMSECTS
+    save_map_memory()
+    -- PROJECTION SETTINGS
+    K_SCREEN_SCALE,K_X_CENTER,K_Y_CENTER,Z_CLIP,Z_MAX=80,63,63,-3,-300
+    -- CAMERA SETTINGS
+    cam_x,cam_y,cam_z, CAM_DIST_TERRAIN=0,0,0,110
+    cam_ax,cam_ay,cam_az = 0,0.5,0
+    -- PLAYER GLOBAL PARAMS
+    player, mov_tiles_x,mov_tiles_z,sub_mov_x,sub_mov_z,t_height_player=nil,0,0,0,0,0
+    -- RENDER STUFF
+    to_draw, game_objects3d={},{}
+    -- cam_matrix_transform
+    sx,sy,sz,cx,cy,cz=sin(cam_ax),sin(cam_ay),sin(cam_az),cos(cam_ax),cos(cam_ay),cos(cam_az)
+    cam_mat00,cam_mat10,cam_mat20,cam_mat01,cam_mat11,cam_mat21,cam_mat02,cam_mat12,cam_mat22=cz*cy,-sz,cz*sy,cx*sz*cy+sx*sy,cx*cz,cx*sz*sy-sx*cy,sx*sz*cy-cx*sy,sx*cz,sx*sz*sy+cx*cy
 
+    --PALETTE CHANGES
+    pal(1, 140, 1)
+    pal(13, 134,1)
+    pal(15, 138,1)
+end
 
 function get_tileid(pos) 
     return pos\TILE_SIZE
@@ -44,7 +51,7 @@ function get_type_id(idx,idz)
 end
 
 function get_height_pos(posx,posz)
-    return (terrainmesh[get_tileid(posx)][get_tileid(posz)]&0x00ff)/HEIGHTMULTIPLIER
+    return (terrainmesh[posx\TILE_SIZE][posz\TILE_SIZE]&0x00ff)/HEIGHTMULTIPLIER
 end
 
 function get_height_id(idx,idz)
@@ -69,6 +76,7 @@ function is_inside_cam_cone_z(posz)
 end
 
 function get_draw_x_z(x,z)
+    --not worth it
     local d_x = x
     if (is_inside_cam_cone_x(x-terrain_size)) d_x = x-terrain_size
     if (is_inside_cam_cone_x(x+terrain_size)) d_x = x+terrain_size
@@ -78,146 +86,152 @@ function get_draw_x_z(x,z)
     return d_x,d_z
 end
 
-function quicksort(t,start, endi)
-   start, endi = start or 1, endi or #t
-  --partition w.r.t. first element
-  if(endi - start < 1) return t
-  local pivot = start
-  for i = start + 1, endi do
-    if t[i].z <= t[pivot].z then
-      if i == pivot + 1 then
-        t[pivot],t[pivot+1] = t[pivot+1],t[pivot]
-      else
-        t[pivot],t[pivot+1],t[i] = t[i],t[pivot],t[pivot+1]
-      end
-      pivot = pivot + 1
+-- #casualeffects/morgan3D heap sort, credits to them
+function ce_heap_sort(data)
+    local n = #data
+
+    for i = flr(n / 2) + 1, 1, -1 do
+        local parent, value, m = i, data[i], i + i
+        local key = value.z 
+
+        while m <= n do
+            if ((m < n) and (data[m + 1].z > data[m].z)) m += 1
+            local mval = data[m]
+            if (key > mval.z) break
+            data[parent] = mval
+            parent = m
+            m += m
+        end
+        data[parent] = value
+    end 
+
+    for i = n, 2, -1 do
+        local value = data[i]
+        data[i], data[1] = data[1], value
+
+        local parent, terminate, m = 1, i - 1, 2
+        local key = value.z 
+
+        while m <= terminate do
+            local mval = data[m]
+            local mkey = mval.z
+            if (m < terminate) and (data[m + 1].z > mkey) then
+                m += 1
+                mval = data[m]
+                mkey = mval.z
+            end
+            if (key > mkey) break
+            data[parent] = mval
+            parent = m
+            m += m
+        end  
+
+        data[parent] = value
     end
-  end
-   t = quicksort(t, start, pivot - 1)
-  return quicksort(t, pivot + 1, endi)
 end
 
+-- #electricgryphon's/ trifill method, credits to them
 function trifill(x1,y1,x2,y2,x3,y3, color)
 	color1 = color
 	local x1=band(x1,0xffff)
-          local x2=band(x2,0xffff)
-          local y1=band(y1,0xffff)
-          local y2=band(y2,0xffff)
-          local x3=band(x3,0xffff)
-          local y3=band(y3,0xffff)
-          
-          local nsx,nex
-          --sort y1,y2,y3
-          if(y1>y2)then
-            y1,y2=y2,y1
-            x1,x2=x2,x1
-          end
-          
-          if(y1>y3)then
-            y1,y3=y3,y1
-            x1,x3=x3,x1
-          end
-          
-          if(y2>y3)then
-            y2,y3=y3,y2
-            x2,x3=x3,x2          
-          end
-          
-         if(y1!=y2)then          
-            local delta_sx=(x3-x1)/(y3-y1)
-            local delta_ex=(x2-x1)/(y2-y1)
-           
-            if(y1>0)then
-                nsx=x1
-                nex=x1
-                min_y=y1
-            else --top edge clip
-                nsx=x1-delta_sx*y1
-                nex=x1-delta_ex*y1
-                min_y=0
-            end
-           
-            max_y=min(y2,128)
-           
-            for y=min_y,max_y-1 do
+    local x2=band(x2,0xffff)
+    local y1=band(y1,0xffff)
+    local y2=band(y2,0xffff)
+    local x3=band(x3,0xffff)
+    local y3=band(y3,0xffff)
+    
+    local nsx,nex
+    --sort y1,y2,y3
+    if(y1>y2)then
+        y1,y2=y2,y1
+        x1,x2=x2,x1
+    end
+    
+    if(y1>y3)then
+        y1,y3=y3,y1
+        x1,x3=x3,x1
+    end
+    
+    if(y2>y3)then
+        y2,y3=y3,y2
+        x2,x3=x3,x2          
+    end
+    
+    if(y1!=y2)then          
+        local delta_sx=(x3-x1)/(y3-y1)
+        local delta_ex=(x2-x1)/(y2-y1)
+    
+    if(y1>0)then
+        nsx=x1
+        nex=x1
+        min_y=y1
+    else 
+        nsx=x1-delta_sx*y1
+        nex=x1-delta_ex*y1
+        min_y=0
+    end
+    
+    max_y=min(y2,128)
+    
+    for y=min_y,max_y-1 do
+        rectfill(nsx,y,nex,y,color1)
+        nsx+=delta_sx
+        nex+=delta_ex
+    end
 
-            rectfill(nsx,y,nex,y,color1)
-            --if(band(y,1)==0)then rectfill(nsx,y,nex,y,color1) else rectfill(nsx,y,nex,y,color2) end
-            nsx+=delta_sx
-            nex+=delta_ex
-            end
-
-        else --where top edge is horizontal
-            nsx=x1
-            nex=x2
+    else 
+        nsx=x1
+        nex=x2
+    end
+   
+    if(y3!=y2)then
+        local delta_sx=(x3-x1)/(y3-y1)
+        local delta_ex=(x3-x2)/(y3-y2)
+        
+        min_y=y2
+        max_y=min(y3,128)
+        if(y2<0)then
+            nex=x2-delta_ex*y2
+            nsx=x1-delta_sx*y1
+            min_y=0
         end
-
-          
-        if(y3!=y2)then
-            local delta_sx=(x3-x1)/(y3-y1)
-            local delta_ex=(x3-x2)/(y3-y2)
-           
-            min_y=y2
-            max_y=min(y3,128)
-            if(y2<0)then
-                nex=x2-delta_ex*y2
-                nsx=x1-delta_sx*y1
-                min_y=0
-            end
-           
-             for y=min_y,max_y do
-
+            for y=min_y,max_y do
                 rectfill(nsx,y,nex,y,color1)
-                --if(band(y,1)==0)then rectfill(nsx,y,nex,y,color1) else rectfill(nsx,y,nex,y,color2) end
                 nex+=delta_ex
                 nsx+=delta_sx
-             end
-           
-        else --where bottom edge is horizontal
-            rectfill(nsx,y3,nex,y3,color1)
-            --if(band(y,1)==0)then rectfill(nsx,y3,nex,y3,color1) else rectfill(nsx,y3,nex,y3,color2) end
-        end
-
+            end
+    else
+        rectfill(nsx,y3,nex,y3,color1)
+    end
 end
 
 function project_point(x,y,z)
     return x*K_SCREEN_SCALE/z+K_X_CENTER,y*K_SCREEN_SCALE/z+K_X_CENTER
 end
 
--- @DRAW GUI
-function render_gui()
-    y_count = 0
-    x_count = 0
-
-    for y=0,terrain_numverts-sector_numfaces, sector_numfaces do
-        for x=0,terrain_numverts-sector_numfaces, sector_numfaces do
+function save_map_memory()
+    local y_count = 0
+    local x_count = 0
+    local color_p = 0
+    for y=terrain_numverts-sector_numfaces,0,-sector_numfaces do
+        for x=0,terrain_numverts-sector_numfaces,sector_numfaces do
             
-            h = get_height_id(x+sector_numfaces\2, y+sector_numfaces\2)
-            if (h>10) color_p=3 
-            if (h>0 and h <= 10) color_p=11 
+            h = get_height_id(x+sector_numfaces\2,y+sector_numfaces\2)
+            if (h>20) color_p=3 
+            if (h>0 and h <= 20) color_p=11 
             if (h==0) color_p=1 
-
-            if(y_count == 0) then
-                pset(0,0, color_p)
-                pset(x_count,0, color_p)
-                pset(x_count+1,0, color_p)
-                pset(x_count+1,0, color_p)
-                pset(x_count,0, color_p)
-            end
-
-            if(x_count==1) pset(0,34-y_count, color_p) pset(0,34-y_count-1, color_p)
-            
-            pset(x_count,34-y_count, color_p)
-            pset(x_count+1,34-y_count, color_p)
-            pset(x_count+1,34-y_count-1, color_p)
-            pset(x_count,34-y_count-1, color_p)
-            x_count += 2
+            sset( 112+x_count, 112+y_count, color_p )
+            x_count += 1
         end
         x_count = 0
-        y_count += 2
-    end
-    pset(((mov_tiles_x*2)\(sector_numfaces)),(terrain_numverts-(mov_tiles_z))\((sector_numfaces)/2), 7)
-    --terrainmesh
+        y_count += 1
+    end 
+end
+
+-- @DRAW GUI
+function render_gui()
+    sspr(112, 112, 15, 15, 0, 0,30,30)
+    pset(((mov_tiles_x*2-1)\(sector_numfaces)),NUMSECTS*2+((-mov_tiles_z*2-1)\sector_numfaces), 7)
 end
 
 -- @TRANSFORM AND DRAW TERRAIN
@@ -322,13 +336,17 @@ function render_terrain()
         
     end
 
+    --x[[ DEBUG PRINT OBJECTS TO DRAW
+        print('draw '..#game_objects3d,0,30,8)
+    --]]
+
     for i=#game_objects3d,1,-1 do
         game_object = game_objects3d[i]
         game_object:transform()
         if(is_inside_cam_cone_z(game_object.d_z) and is_inside_cam_cone_x(game_object.d_x))add(to_draw, game_objects3d[i])
     end
 
-    quicksort(to_draw)
+    ce_heap_sort(to_draw)
 
     for i=#to_draw, 1, -1 do
         to_draw[i]:draw()
