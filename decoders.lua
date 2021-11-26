@@ -1,7 +1,7 @@
 -- terrain/models decoder
 -- 854 tokens
 
-NUM_PASSES = 3
+NUM_PASSES = -1
 TERRAIN_MEMLOC_START = 5342
 OBJS_MEMLOC_END = 6685
 
@@ -46,6 +46,9 @@ function init_terrain(t_256)
         end
     end
 
+    cls()
+    print('GENERATING TERRAIN...',1,1,9)
+    local test_j = 0
     for z=0,NUM_PASSES do --9
         for j=0,h-1 do 
             for i=0, w-1 do
@@ -53,37 +56,33 @@ function init_terrain(t_256)
                                                             terrainmesh[(i-1)%w][(j+1)%h] + terrainmesh[i][(j+1)%h] * 2     + terrainmesh[(i+1)%w][(j+1)%h]*2 +
                                                             terrainmesh[(i-1)%w][j]* 3 + terrainmesh[i][j]       * 4 + terrainmesh[(i+1)%w][j]*2 +
                                                             terrainmesh[(i-1)%w][(j-1)%h] + terrainmesh[i][(j-1)%h] * 2 + terrainmesh[(i+1)%w][(j-1)%h]
-                                                        )/14)&0x00ff.ffff end
-                --[[ DEBUG DRAW TERRAIN
-                    pset(i,j, terrainmesh[i][j])
+                                                        )/13.5)&0x00ff.ffff end
+                --x[[ DEBUG DRAW TERRAIN
+                    pset(i+test_j,j+10, terrainmesh[i][j])
                 --]]
             end
         end
 
         for i=0,w-1 do 
-            for j=0, h-1 do
+            for j=h-1, 0,-1 do
                 if(terrainmesh[i][j] >= 0) then terrainmesh[i][j] = ((
-                                                            terrainmesh[(i-1)%w][(j+1)%h] * 3 + terrainmesh[i][(j+1)%h] + terrainmesh[(i+1)%w][(j+1)%h] +
-                                                            terrainmesh[(i-1)%w][j]       * 2 + terrainmesh[i][j]       * 5 + terrainmesh[(i+1)%w][j]*2 +
-                                                            terrainmesh[(i-1)%w][(j-1)%h] + terrainmesh[i][(j-1)%h] *3 + terrainmesh[(i+1)%w][(j-1)%h] 
-                                                        )/14)&0x00ff.ffff end
-                --[[ DEBUG DRAW TERRAIN
-                    pset(i,j, terrainmesh[i][j])
+                                                            terrainmesh[(i-1)%w][(j+1)%h] + terrainmesh[i][(j+1)%h] * 2     + terrainmesh[(i+1)%w][(j+1)%h]*2 +
+                                                            terrainmesh[(i-1)%w][j]* 3 + terrainmesh[i][j]       * 4 + terrainmesh[(i+1)%w][j]*2 +
+                                                            terrainmesh[(i-1)%w][(j-1)%h] + terrainmesh[i][(j-1)%h] * 2 + terrainmesh[(i+1)%w][(j-1)%h]
+                                                        )/13.5)&0x00ff.ffff end
+                --x[[ DEBUG DRAW TERRAIN
+                    pset(i+test_j,j+10, terrainmesh[i][j])
                 --]]
             end
         end
+        
+        test_j -= 15
     end
-
 
     -- stupid fix for edges
     for j=0,h-1 do
-        terrainmesh[0][j] = (terrainmesh[1][j]*2+terrainmesh[w-1][j])/3
+        terrainmesh[0][j] = (terrainmesh[1][j]+terrainmesh[w-1][j])/2
     end
-
-    for i=0,w-1 do
-        terrainmesh[i][0] = (terrainmesh[i][h-1]*2+terrainmesh[i][1])/3
-    end
-
     c_index = 0
     r_index = 0
     rep_count = 1
