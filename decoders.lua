@@ -1,5 +1,5 @@
 -- terrain/models decoder
--- 854 tokens
+-- 895 tokens
 
 NUM_PASSES = 4
 TERRAIN_MEMLOC_START = 5342
@@ -116,7 +116,7 @@ function decode_model(memloc)
     x_memloc = f_memloc+ size_f
 
     verts = {}
-    for p=0, size_v-3, 3 do add(verts, {peek(v_memloc+p) - peek(x_memloc) , peek(v_memloc+p+1) - peek(x_memloc+1), peek(v_memloc+p+2) - peek(x_memloc+2)}) end   
+    for p=0, size_v-3, 3 do add(verts, {(peek(v_memloc+p) - peek(x_memloc)) *peek(x_memloc+3) , (peek(v_memloc+p+1) - peek(x_memloc+1)) *peek(x_memloc+3), (peek(v_memloc+p+2) - peek(x_memloc+2))*peek(x_memloc+3)}) end   
     
     faces = {}
     for p=0, size_f-4, 4 do add(faces, {peek(f_memloc+p), peek(f_memloc+p+1), peek(f_memloc+p+2), peek(f_memloc+p+3)}) end 
