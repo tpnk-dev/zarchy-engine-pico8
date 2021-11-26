@@ -275,7 +275,7 @@ function render_terrain()
             if(type_object3d > 0) add(to_draw, create_object3d(get_type_id(vert_x_id, vert_z_id), vert_world_x, vert_world_y, vert_world_z, rnd(0.1)))
         end
 
-        --[[ DEBUG PRINT VERTEX DATA
+        --x[[ DEBUG PRINT VERTEX DATA
             if(v%mesh_numverts == 0)then 
                 print(tostr(vert_z_id), trans_proj_vert[4]-13, trans_proj_vert[5]-2, 11)
             end
@@ -294,7 +294,7 @@ function render_terrain()
         --]]
     end
 
-    --[[ DEBUG PRINT POS&COORDS
+    --x[[ DEBUG PRINT POS&COORDS
         print("player_pos: "..player.x..","..player.z,40,10, 6)
         print("mov_tiles: "..mov_tiles_x..","..mov_tiles_z,40,20, 6)
         print("tile_type: "..((terrainmesh[mov_tiles_x][mov_tiles_z]&0x00ff)/3),40,30, 6)
@@ -423,7 +423,7 @@ function transform_object3d(object3d)
         local t_vertex=object3d.t_verts[i]
         local vertex=object3d.verts[i]
 
-        t_vertex[1],t_vertex[2],t_vertex[3]=mat_rotate_point(vertex[1],vertex[2],vertex[3], object3d.ax, object3d.ay,object3d.az)
+        t_vertex[1],t_vertex[2],t_vertex[3]=mat_rotate_point(vertex[1],vertex[2],vertex[3], object3d.ax,object3d.ay,object3d.az)
 
         t_vertex[1]+=object3d.d_x-cam_x
         t_vertex[2]+=object3d.y-cam_y
@@ -437,33 +437,37 @@ end
 function update_terrain()
     for i=#game_objects3d,1,-1 do
         local object=game_objects3d[i]
-        if object.life_span != nil and i != nil then
+        if object.life_span != nil then
             object.life_span -= time() - lasttime
             if(object.life_span < 0) then
                 deli(game_objects3d, i)
-                return false
             end
         end
-        if object.remove != nil and i != nil then
+        if object.remove != nil then
             if(object.remove) then
                 deli(game_objects3d, i)
-                return false
             end
         end
 
         object:update_func()
+        object.x %= (terrain_size)
+        object.z %= (terrain_size)
     end
 end
 
 -- @HELPER FUNCTIONS FOR UPDATING OBJECTS
-function gravity(object3d) 
+function gravity(object3d, bouncy, strength) 
     object3d.x %= terrain_size object3d.z %= terrain_size 
     if object3d.y+object3d.vy>get_height_pos(object3d.x, object3d.z) then 
-        object3d.y+=object3d.vy object3d.x+=object3d.vx object3d.z+=object3d.vz object3d.vy-= 0.1 
+        object3d.y+=object3d.vy object3d.x+=object3d.vx object3d.z+=object3d.vz  object3d.vy-=strength
     else 
-        if(abs(object3d.vy) < 0.2) then object3d.vy = 0 object3d.y = get_height_pos(object3d.x, object3d.z)
-        else object3d.vy = (-object3d.vy/3) end
-    end  
+        if(bouncy) then
+            if(abs(object3d.vy) < 0.2) then object3d.vy = 0 object3d.y = get_height_pos(object3d.x, object3d.z)
+            else object3d.vy = (-object3d.vy/3) end
+        else
+            object3d.vy=0 object3d.vx=0 object3d.vz=0 object3d.y = get_height_pos(object3d.x, object3d.z)
+        end
+    end   
 end
 
 -- @CREATE OBJECTS3D
