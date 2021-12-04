@@ -272,9 +272,9 @@ function render_terrain()
         end
 
         --x[[ DEBUG PRINT VERTEX DATA
-            --if(v%mesh_numverts == 0)then 
-           --     print(tostr(vert_z_id), trans_proj_vert[4]-13, trans_proj_vert[5]-2, 11)
-            --end
+            if(v%mesh_numverts == 0)then 
+                print(tostr(vert_z_id), trans_proj_vert[4]-13, trans_proj_vert[5]-2, 11)
+            end
 
             if(v\mesh_numverts == 0)then 
                 print(tostr(vert_x_id), trans_proj_vert[4], trans_proj_vert[5]+6, 11)
