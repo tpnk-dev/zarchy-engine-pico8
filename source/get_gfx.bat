@@ -1,2 +1,2 @@
-py pico8rle.py test.png --models models.txt --objs objs.png
+py pico8rle.py models.txt
 pause
