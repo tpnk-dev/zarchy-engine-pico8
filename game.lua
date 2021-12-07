@@ -1,11 +1,7 @@
 
 
---player {x,y,z} is the target for zarchy_engine
-test_ay = 0
-test_ax = 0
-
 -- these are the object ids in the scene, use return_model with the correct memory position to add new models
-OBJS_DATA = {decode_model(6685), decode_model(6730)}
+OBJS_DATA = {decode_model(0), decode_model(45)}
 
 --COLORS
 pal(1, 140, 1)
@@ -13,23 +9,23 @@ pal(13, 134,1)
 pal(15, 138,1)
 
 function game_init()
-    init_engine()
+    init_terrain()
 
-    player = {x=0,y=0,z=0}
+    player = {x=0,y=0,z=100}
 
     main_update_draw = draw_update
     main_update = logic_update
 
     -- instantiate a sprite3d
-    add(game_objects3d, create_sprite3d(player.x,player.y, player.z,
-                                        nil,nil,nil,
-                                        function(sprite) local sx,sy=project_point(sprite.t_x,sprite.t_y,sprite.t_z) circfill(sx, sy, 1, 8) end,
-                                        function(sprite) sprite.x,sprite.y,sprite.z = player.x,player.y,player.z end,
-                                        function(sprite) end, 
-                                        nil, nil))
+    create_sprite3d(player.x,player.y, player.z,
+                    nil,nil,nil,
+                    function(sprite) local sx,sy=project_point(sprite.t_x,sprite.t_y,sprite.t_z) circfill(sx, sy, 1, 8) end,
+                    function(sprite) sprite.x,sprite.y,sprite.z = player.x,player.y,player.z end,
+                    function(sprite) end, 
+                    nil, nil)
                         
     -- instantiate a object3d
-    add(game_objects3d, create_object3d(2, 0,100, 3,0,0,0,function(sprite) gravity(sprite, false, 3)  end))
+    create_object3d(2, 0,100, 3,0,0,0,false,false,function(sprite) gravity(sprite, false, 3)  end)
 end
 
 function logic_update()
@@ -48,7 +44,6 @@ function logic_update()
     if(btn(3))then
        player.z -= 6
     end
-
 
     if(btn(4))then
         if(time()&0x0000.1000 == 0) then
