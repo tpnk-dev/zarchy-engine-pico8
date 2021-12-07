@@ -299,7 +299,7 @@ function render_terrain()
             if(v%mesh_numverts!=0 and v%mesh_numverts<mesh_numverts-1 and v\mesh_numverts!=0)then 
                 local type_object3d=get_type_id(vert_x_id,vert_z_id)
                 srand(vert_x_id)
-                if(type_object3d > 0) create_object3d(get_type_id(vert_x_id, vert_z_id), vert_world_x, vert_world_y, vert_world_z,nil,nil,nil,true,true)
+                if(type_object3d > 0) create_object3d(get_type_id(vert_x_id, vert_z_id), vert_world_x, vert_world_y, vert_world_z,nil,nil,nil,nil,nil,nil,nil,nil,true,true)
             end
 
             --x[[ DEBUG PRINT VERTEX DATA
@@ -550,7 +550,7 @@ function create_sprite3d(x,y,z,vx,vy,vz,draw_func,update_func,start_func,life_sp
 
     return sprite3d
 end
-function create_object3d(obj_id,x,y,z,ay,ax,az,has_shadow,is_terrain,update_func,start_func,vx,vy,vz)
+function create_object3d(obj_id,x,y,z,ay,ax,az,update_func,start_func,vx,vy,vz,no_shadow,is_terrain)
     local object3d = {
         x = x,
         y = y,
@@ -572,14 +572,20 @@ function create_object3d(obj_id,x,y,z,ay,ax,az,has_shadow,is_terrain,update_func
         transform=transform_object3d,
         shadow = nil
     }
+    is_terrain = is_terrain or false
+    no_shadow = no_shadow or false
 
     if(is_terrain) then
         add(to_draw, object3d)
     else
         add(game_objects3d, object3d)
-        if(has_shadow) then
+        if(not no_shadow) then
             --shadow is the next obj in obj_data
-            object3d.shadow = add(game_objects3d,create_object3d(obj_id+1, 0,0,-0.1,0,0,0,false,false,function(shadow) shadow.x = object3d.x shadow.z = object3d.z + 1 shadow.y = get_height_pos(object3d.x,object3d.z) shadow.ay = object3d.ay end))        
+            object3d.shadow = add(game_objects3d,create_object3d(
+                                obj_id + 1, 0,0,-0.1,0,0,0,
+                                function(shadow) shadow.x = object3d.x shadow.z = object3d.z + 1 shadow.y = get_height_pos(object3d.x,object3d.z) shadow.ay = object3d.ay end,
+                                nil,nil,nil,nil,true,false))     
+             
         end 
     end
 

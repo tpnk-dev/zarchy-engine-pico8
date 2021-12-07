@@ -1,6 +1,7 @@
 
 
 -- these are the object ids in the scene, use return_model with the correct memory position to add new models
+-- the next model in the sequence is always considered the shadow of the previous object
 OBJS_DATA = {decode_model(0), decode_model(45)}
 
 --COLORS
@@ -25,7 +26,7 @@ function game_init()
                     nil, nil)
                         
     -- instantiate a object3d
-    create_object3d(2, 0,100, 3,0,0,0,false,false,function(sprite) gravity(sprite, false, 3)  end)
+    create_object3d(1, player.x,100, player.z,0,0,0,function(sprite) gravity(sprite, false, 3)  end)
 end
 
 function logic_update()
