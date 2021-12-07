@@ -10,6 +10,10 @@ TERRAIN_NUMVERTS=241 -- HAS TO BE AN ODD NUMBER
 terrain_size = 0
 -- MESH SETTINGS
 mesh_leftmost_x,mesh_rightmost_x,mesh_upmost_z,mesh_downmost_z=-33,33,33,-33
+-- SECTOR SETTINGS
+NUMSECTS=30 --terrain_numfaces MUST BE DIVISIBLE BY THIS!
+-- MINIMAP SETTINGS
+minimap_memory_start = 16*8 -(ceil(NUMSECTS/8)*8)
 -- TILE SETTING
 TILE_SIZE=15
 -- PROJECTION SETTINGS
@@ -38,7 +42,6 @@ function init_terrain()
     mesh_numfaces=12
     mesh_numverts=mesh_numfaces + 1
     -- SECTOR SETTINGS
-    NUMSECTS=30 --terrain_numfaces MUST BE DIVISIBLE BY THIS!
     sector_numfaces=terrain_numfaces/NUMSECTS
     save_map_memory()
 end
@@ -262,7 +265,7 @@ function save_map_memory()
 
             sector_slopes[y_count][x_count] = current_sect_height
 
-            sset( 96+x_count, 96+y_count, color_p)
+            sset( minimap_memory_start+x_count, minimap_memory_start+y_count, color_p)
             x_count += 1
         end
         x_count = 0
@@ -270,7 +273,7 @@ function save_map_memory()
     end 
 end
 function render_gui()
-    sspr(96, 96, 30, 30, 0, 0,31,31)
+    sspr(minimap_memory_start, minimap_memory_start, NUMSECTS, NUMSECTS, 0, 0,NUMSECTS+1,NUMSECTS+1)
     pset(((mov_tiles_x)\(sector_numfaces)),NUMSECTS+((-mov_tiles_z)\sector_numfaces), 7)
 end
 
