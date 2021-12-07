@@ -513,7 +513,7 @@ function gravity(object3d, bouncy, strength)
 end
 
 -- @CREATE OBJECTS3D
-function create_sprite3d(x,y,z,vx,vy,vz,draw_func,update_func,start_func,life_span,has_shadow) 
+function create_sprite3d(x,y,z,vx,vy,vz,draw_func,update_func,start_func,life_span,no_shadow) 
     local sprite3d = {
         x = x,
         y = y,
@@ -533,19 +533,20 @@ function create_sprite3d(x,y,z,vx,vy,vz,draw_func,update_func,start_func,life_sp
         d_z = 0,
         shadow = nil
     }
+    local no_shadow = no_shadow or false
 
     sprite3d:start_func()
     add(game_objects3d, sprite3d)
 
     --create shadow particle
-    if(has_shadow)then
+    if(not no_shadow)then
         create_sprite3d(
             x,0,z,
             nil,nil,nil,
             function(sprite_shadow) local sx,sy=project_point(sprite_shadow.t_x,sprite_shadow.t_y,sprite_shadow.t_z) circfill(sx, sy, 0, 0 ) end,
             function(sprite_shadow) sprite_shadow.x=sprite3d.x sprite_shadow.z=sprite3d.z+0.05 sprite_shadow.y=get_height_pos(sprite3d.x, sprite3d.z) end,
             NOP, 
-            life_span,false)
+            life_span, true)
     end
 
     return sprite3d
@@ -573,7 +574,7 @@ function create_object3d(obj_id,x,y,z,ay,ax,az,update_func,start_func,vx,vy,vz,n
         shadow = nil
     }
     is_terrain = is_terrain or false
-    no_shadow = no_shadow or false
+    local no_shadow = no_shadow or false
 
     if(is_terrain) then
         add(to_draw, object3d)

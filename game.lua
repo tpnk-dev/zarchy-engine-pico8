@@ -22,8 +22,7 @@ function game_init()
                     nil,nil,nil,
                     function(sprite) local sx,sy=project_point(sprite.t_x,sprite.t_y,sprite.t_z) circfill(sx, sy, 1, 8) end,
                     function(sprite) sprite.x,sprite.y,sprite.z = player.x,player.y,player.z end,
-                    function(sprite) end, 
-                    nil, nil)
+                    function(sprite) end)
                         
     -- instantiate a object3d
     create_object3d(1, player.x,100, player.z,0,0,0,function(sprite) gravity(sprite, false, 3)  end)
@@ -53,7 +52,7 @@ function logic_update()
                                     function(sprite) local sx,sy=project_point(sprite.t_x,sprite.t_y,sprite.t_z) circfill(sx, sy, 0, sprite.life_span + 9) end,
                                     function(sprite) gravity(sprite, false, 0.1)  end,
                                     function(sprite) srand(time()) sprite.y = player.y + 0.001 sprite.vy = 2 sprite.vx = rnd(2)-1 sprite.vz = rnd(2)-1 end, 
-                                    10, true))
+                                    10))
         end
 
     end
