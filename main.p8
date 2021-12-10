@@ -20,7 +20,7 @@ end
 function _draw()    
     cls(0)
     main_update_draw()
-    print(stat(1).."   "..stat(0),40,1,6)
+    print(stat(1),40,1,6)
 end
 
 --13656 bytes for heightmap
