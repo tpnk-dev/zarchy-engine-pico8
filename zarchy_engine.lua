@@ -1,5 +1,5 @@
 -- @marcospiv's 'ZARCHY' engine - 2021
--- 2965 tokens
+-- 2671 tokens
 -- tpnk_dev
 -- UPPER CASE ARE CONSTANTS. ONLY MODIFY THEM, UNLESS YOU KNOW WHAT YOU ARE DOING. REPLACE WITH FINAL VALUE IN PRODUCTION CODE.
 
@@ -280,7 +280,7 @@ function render_terrain()
                 if(type_object3d > 0) create_object3d(get_type_id(vert_x_id, vert_z_id), vert_world_x, vert_world_y, vert_world_z,nil,nil,nil,nil,nil,nil,nil,nil,true,true)
             end
 
-            --x[[ DEBUG PRINT VERTEX DATA
+            --[[ DEBUG PRINT VERTEX DATA
                 if(v%mesh_numverts == 0)then 
                     print(tostr(vert_z_id), trans_proj_vert[4]-13, trans_proj_vert[5]-2, 11)
                 end
@@ -338,7 +338,7 @@ function render_terrain()
         print('draw '..#game_objects3d,0,30,8)
     --]]
 
-    --x[[ DEBUG PRINT POS&COORDS
+    --[[ DEBUG PRINT POS&COORDS
         print("player_pos: "..player.x..","..player.z,40,10, 6)
         print("mov_tiles: "..mov_tiles_x..","..mov_tiles_z,40,20, 6)
         print("tile_type: "..((terrainmesh[mov_tiles_x][mov_tiles_z]&0x00ff)),40,30, 6)
