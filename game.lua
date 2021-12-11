@@ -25,7 +25,7 @@ function game_init()
                     nil,nil,nil,
                     function(sprite) local sx,sy=project_point(sprite.t_x,sprite.t_y,sprite.t_z) circfill(sx, sy, 1, 8) end,
                     function(sprite)
-                        sprite.y = t_height_player 
+                        sprite.y = t_height_player_smooth 
 
                         if(btn(4))then
                             if(time()&0x0000.1000 == 0) then
@@ -34,22 +34,23 @@ function game_init()
                                                         function(sprite) local sx,sy=project_point(sprite.t_x,sprite.t_y,sprite.t_z) circfill(sx, sy, 0, sprite.life_span + 4) end,
                                                         function(sprite) gravity(sprite, false, 0.1)  end,
                                                         function(sprite) srand(time()) sprite.y = sprite.y + 0.001 sprite.vy = 2 sprite.vx = rnd(2)-1 sprite.vz = rnd(2)-1 end, 
-                                                        8)
+                                                        20)
                             end
                         end
                         if(btn(0))then
-                            sprite.x -= 6
+                            sprite.x -=6
                         end
                         if(btn(1))then
                             sprite.x += 6
                         end
                         if(btn(2))then
-                            sprite.z += 6
+                            sprite.z +=6
                         end
                         if(btn(3))then
                             sprite.z -= 6
                         end
 
+                        --230
                         --sprite.x,sprite.y,sprite.z = player.x,player.y,player.z 
 
                     end,
@@ -83,8 +84,7 @@ function logic_update()
 
     cam_x = player.x --+ 50 - 50
     cam_z = player.z - CAM_DIST_TERRAIN
-    cam_y =  50
-    cam_y = 25 + t_height_player_smooth
+    cam_y = 45 + t_height_player_smooth
 
     lasttime = time()
 end
