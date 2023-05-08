@@ -1,5 +1,7 @@
 
 
+envir={}
+
 -- these are the object ids in the scene, use return_model with the correct memory position to add new models
 -- the next model in the sequence is always considered the shadow of the previous object
 OBJS_DATA = {decode_model(0), decode_model(45)}
@@ -11,6 +13,13 @@ pal(15, 138,1)
 
 -- terrain dirt colors
 rnd_dirt = {3,4,13,15}
+
+TERRAIN_FUNCS = { 
+    function(object) 
+        object.x += cos(time()) * 3
+        object.z += sin(time()) * 3
+    end, NOP
+}
 
 function game_init()
     init_terrain()
@@ -57,7 +66,7 @@ function game_init()
                     function(sprite) end)
                         
     -- instantiate a object3d
-    create_object3d(1, player.x,100, player.z,0,0,0,function(sprite) gravity(sprite, false, 3)  end)
+    create_object3d(1, player.x,100, player.z,0,0,0,function(sprite) gravity(sprite, false, .05)  end)
 end
 
 function get_color_id(idx,idz,flip)
@@ -87,6 +96,8 @@ function logic_update()
     cam_y = 45 + t_height_player_smooth
 
     lasttime = time()
+
+    envir={}
 end
 
 function draw_update()

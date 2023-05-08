@@ -33,6 +33,14 @@ cam_mat00,cam_mat10,cam_mat20,cam_mat01,cam_mat11,cam_mat21,cam_mat02,cam_mat12,
 -- other
 NOP=function()end
 
+function is_in_table(tbl, num)
+    local exist=false
+    for n in all(tbl) do
+      if(n==num) exist=true
+    end
+    return exist
+end
+
 function clear_depth_buffer()
     for i=0, mesh_numfaces-1 do depth_buffer[i] = {} end
 end
@@ -67,7 +75,7 @@ end
 function get_height_smooth(object)
     sub_mov_x,sub_mov_z =(object.x/TILE_SIZE)%1, (object.z/TILE_SIZE)%1 
 
-    local p1_x,p1_z=(object.x\TILE_SIZE)*TILE_SIZE,(object.z\TILE_SIZE)*TILE_SIZE
+    local p1_x,p1_z=((object.x\TILE_SIZE)*TILE_SIZE)%terrain_size,((object.z\TILE_SIZE)*TILE_SIZE)%terrain_size
     local p1_y=get_height_pos(p1_x,p1_z)
 
     local p2_x,p2_z=(p1_x+TILE_SIZE)%terrain_size,p1_z
@@ -254,6 +262,7 @@ end
 
 -- @TRANSFORM AND DRAW TERRAIN
 function render_terrain()
+    order_objects()
     update_view()
     rectfill(0,0,128,128,0)
     if(is_inside_cam_cone_y((terrainmesh[1][1])&0x00ff.ffff)) then
@@ -276,11 +285,11 @@ function render_terrain()
 
             if(v%mesh_numverts!=0 and v%mesh_numverts<mesh_numverts-1 and v\mesh_numverts!=0)then 
                 local type_object3d=get_type_id(vert_x_id,vert_z_id)
-                srand(vert_x_id)
-                if(type_object3d > 0) create_object3d(get_type_id(vert_x_id, vert_z_id), vert_world_x, vert_world_y, vert_world_z,nil,nil,nil,nil,nil,nil,nil,nil,true,true)
+                -- Create environmental objects here
+                if(type_object3d > 0) add(envir, create_object3d(get_type_id(vert_x_id, vert_z_id), vert_world_x, vert_world_y, vert_world_z,nil,nil,nil,nil,TERRAIN_FUNCS[type_object3d],nil,nil,nil,true,true))
             end
 
-            --[[ DEBUG PRINT VERTEX DATA
+            --x[[ DEBUG PRINT VERTEX DATA
                 if(v%mesh_numverts == 0)then 
                     print(tostr(vert_z_id), trans_proj_vert[4]-13, trans_proj_vert[5]-2, 11)
                 end
@@ -331,37 +340,51 @@ function render_terrain()
                     rect( p1[4],p1[5],p1[4],p1[5], 8 )
                     print(v, p1[4],p1[5]-3, 8)
                 --]]
+            else
+                if(v%mesh_numverts == 0) then
+                    local a = abs((v-(mesh_numfaces+1))\mesh_numverts - (mesh_numfaces+1))
+                    if(a<mesh_numfaces) then
+                        for z=#depth_buffer[a],1,-1 do
+                            depth_buffer[a][z]:draw()
+                        end
+                    end
+                end
             end
         end
+    else
+        render_all_objects()
     end
     --[[ DEBUG PRINT OBJECTS TO DRAW
         print('draw '..#game_objects3d,0,30,8)
     --]]
 
-    --[[ DEBUG PRINT POS&COORDS
-        print("player_pos: "..player.x..","..player.z,40,10, 6)
-        print("mov_tiles: "..mov_tiles_x..","..mov_tiles_z,40,20, 6)
-        print("tile_type: "..((terrainmesh[mov_tiles_x][mov_tiles_z]&0x00ff)),40,30, 6)
+    --x[[ DEBUG PRINT POS&COORDS
+        print("player_pos: "..player.x..","..player.z,40,6, 6)
+        print("mov_tiles: "..mov_tiles_x..","..mov_tiles_z,40,12, 6)
+        print("tile_type: "..((terrainmesh[mov_tiles_x][mov_tiles_z]&0x00ff)),75,0, 6)
     --]]
     
-
-    render_objects()
+    clear_depth_buffer()
 end
 
-function render_objects()
-    for i=#game_objects3d,1,-1 do
-        local game_object = game_objects3d[i]
-        game_object:transform()
-        if(is_inside_cam_cone_z(game_object.d_z) and is_inside_cam_cone_x(game_object.d_x) and is_inside_cam_cone_y(game_object.y)) add(depth_buffer[abs(game_object.d_z-mesh_downmost_z*TILE_SIZE)\TILE_SIZE], game_object)
-    end
-    
-    for i=#depth_buffer, 0, -1 do 
-        for z=1,#depth_buffer[i] do
+function render_all_objects()
+    for i=#depth_buffer,0,-1 do
+        for z=#depth_buffer[i],1,-1 do
             depth_buffer[i][z]:draw()
         end
     end
+end
 
-    clear_depth_buffer()
+function order_objects()
+    --print(#game_objects3d,40,30, 6)
+    for i=#game_objects3d,1,-1 do
+        local game_object = game_objects3d[i]
+        game_object:transform()
+        if(is_inside_cam_cone_z(game_object.d_z) and is_inside_cam_cone_x(game_object.d_x) and is_inside_cam_cone_y(game_object.y)) then game_object.is_visible=true add(depth_buffer[abs(game_object.d_z-mesh_downmost_z*TILE_SIZE)\TILE_SIZE], game_object) else game_object.is_visible=false end  --add(to_draw, game_objects3d[i])
+    end
+    --print(#to_draw,40,20, 6)
+    --if (#game_objects3d>0) ce_heap_sort(game_objects3d) for i=#to_draw, 1, -1 do to_draw[i]:draw() end
+    --clear_depth_buffer()
 end
 
 function update_view()
@@ -469,7 +492,7 @@ function gravity(object3d, bouncy, strength)
 end
 
 -- @CREATE OBJECTS3D
-function create_sprite3d(x,y,z,vx,vy,vz,draw_func,update_func,start_func,life_span,no_shadow) 
+function create_sprite3d(x,y,z,vx,vy,vz,draw_func,update_func,start_func,life_span,no_shadow,disposable) 
     local sprite3d = {
         x = x,
         y = y,
@@ -487,28 +510,36 @@ function create_sprite3d(x,y,z,vx,vy,vz,draw_func,update_func,start_func,life_sp
         t_z = 0,
         d_x = 0,
         d_z = 0,
-        shadow = nil
+        shadow = nil,
+        disposable = disposable or false
     }
+    if(disposable) then
+        if(disposables[disposables_index] != nil) disposables[disposables_index].remove=true 
+        
+        disposables[disposables_index] = sprite3d 
+        disposables_index=(disposables_index+1)%disposables_size
+    end
     local no_shadow = no_shadow or false
-
     sprite3d:start_func()
     add(game_objects3d, sprite3d)
-
+    trunc_terrain(sprite3d)
+    
     --create shadow particle
     if(not no_shadow)then
         sprite3d.shadow = create_sprite3d(
-            x,get_height_pos(sprite3d.x, sprite3d.z),z,
+            sprite3d.x,get_height_pos(sprite3d.x, sprite3d.z),sprite3d.z,
             nil,nil,nil,
             function(sprite_shadow) local sx,sy=project_point(sprite_shadow.t_x,sprite_shadow.t_y,sprite_shadow.t_z) circfill(sx, sy, 0, 0 ) end,
             function(sprite_shadow) sprite_shadow.x=sprite3d.x sprite_shadow.z=sprite3d.z+0.05 sprite_shadow.y=get_height_pos(sprite3d.x, sprite3d.z) if(sprite3d.y <= sprite_shadow.y)then sprite_shadow.remove=true end end,
             NOP, 
             life_span, true)
     end
-
     return sprite3d
 end
+
 function create_object3d(obj_id,x,y,z,ay,ax,az,update_func,start_func,vx,vy,vz,no_shadow,is_terrain)
     local object3d = {
+        obj_id=obj_id,
         x = x,
         y = y,
         z = z,
@@ -527,36 +558,37 @@ function create_object3d(obj_id,x,y,z,ay,ax,az,update_func,start_func,vx,vy,vz,n
         t_verts={},
         draw=draw_object3d,
         transform=transform_object3d,
-        shadow = nil
+        shadow = nil,
+        no_shadow = no_shadow or false
     }
     
     is_terrain = is_terrain or false
-    local no_shadow = no_shadow or false
-
-    if(is_terrain) then
-        add(depth_buffer[abs(object3d.z-mesh_downmost_z*TILE_SIZE)\TILE_SIZE], object3d)
-    else
-        add(game_objects3d, object3d)
-
-        object3d:start_func()
-        
-        if(not no_shadow) then
-            --shadow is the next obj in obj_data
-            object3d.shadow = create_object3d(
-                                obj_id + 1, 0,0,-0.1,0,0,0,
-                                function(shadow) shadow.x = object3d.x shadow.z = object3d.z + 1 shadow.y = get_height_pos(object3d.x,object3d.z) shadow.ay = object3d.ay end,
-                                nil,nil,nil,nil,true,false)
-             
-        end 
-    end
-
+    --local no_shadow = no_shadow or false
     for i=1,#object3d.verts do
         object3d.t_verts[i]={}
         for j=1,3 do
             object3d.t_verts[i][j] = 0
         end
     end
-
+    if(is_terrain) then
+        add(depth_buffer[abs(object3d.z-mesh_downmost_z*TILE_SIZE)\TILE_SIZE], object3d)
+    else
+        if(not object3d.no_shadow) then
+            --shadow is the next obj in obj_data
+            object3d.shadow = create_object3d(
+                                obj_id + 1, 0,0,0,0,0,0,
+                                function(shadow) 
+                                    shadow.x = object3d.x 
+                                    shadow.z = object3d.z 
+                                    shadow.y=get_height_smooth(object3d) 
+                                    shadow.ay = object3d.ay 
+                                end,
+                                nil,nil,nil,nil,true,false)  
+             
+        end 
+        add(game_objects3d, object3d)
+    end
+    object3d:start_func()
     object3d:transform()
     
     return object3d

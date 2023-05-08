@@ -50,11 +50,14 @@ Load main.p8. The sample "game" is in game.lua. What you need to know:
     - ```vx```,```vy```,```vz```: initial velocity on each axis
     -  ```life_span```: how much time the sprite will last on screen
     -  ```no_shadow```: true if sprite has no shadow
+    -  ```disposable```: true if sprite can be destroyed if many are on screen
 - To simulate gravity, you can set ```update_func``` to ```gravity``` which is a helper function located in zarchy_engine.lua
 
 ### Terrain generation
 
-The function ```generate_terrain``` in ```decoders_generator.lua``` uses the sum of multiple sine waves to generate realistic wrappable terrain. Unfortunately it's a bit trial and error. I recommend watching this video for better understanding: https://www.youtube.com/watch?v=O33YV4ooHSo.
+- The function ```generate_terrain()``` in ```decoders_generator.lua``` uses the sum of multiple sine waves to generate realistic wrappable terrain. Unfortunately it's a bit trial and error. I recommend watching this video for better understanding: https://www.youtube.com/watch?v=O33YV4ooHSo.
+- Add terrain objects in ```generate_terrain()``` by setting the 2nd most significant byte of a vertex in ```terrainmesh[][]``` to a ```object_id```
+  - Terrain objects can be updated by populating the index ```object_id``` in ```TERRAIN_FUNCS``` with a function (see example in game.lua)
 
 ### Other parameters
 - zarchy_engine.lua
@@ -65,3 +68,4 @@ The function ```generate_terrain``` in ```decoders_generator.lua``` uses the sum
   - CAM_DIST_TERRAIN: Distance from camera to player
 - game.lua
   - OBJS_DATA: the array of 3D objects. Ex.: OBJS_DATA = {decode_model(0), decode_model(45)}
+  - TERRAIN_FUNCS: array of functions which update environmental objects
