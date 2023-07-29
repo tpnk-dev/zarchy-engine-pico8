@@ -10,13 +10,15 @@ OBJS_DATA = {decode_model(0), decode_model(45)}
 pal(1, 140, 1)
 pal(13, 134,1)
 pal(15, 138,1)
+palt(2, true) -- beige color as transparency is true
+palt(0, false) -- black color as transparency is false
 
 -- terrain dirt colors
 rnd_dirt = {3,4,13,15}
 
 TERRAIN_FUNCS = { 
     function(object) 
-        object.x += cos(time()) * 3
+        object.ay += cos(time()) * .1
         object.z += sin(time()) * 3
     end, NOP
 }
@@ -32,7 +34,7 @@ function game_init()
     -- instantiate a sprite3d
     player = create_sprite3d(0,0, 100,
                     nil,nil,nil,
-                    function(sprite) local sx,sy=project_point(sprite.t_x,sprite.t_y,sprite.t_z) circfill(sx, sy, 1, 8) end,
+                    function(params) circfill_to_scale(2,params,8) end,
                     function(sprite)
                         sprite.y = t_height_player_smooth 
 
@@ -40,10 +42,11 @@ function game_init()
                             if(time()&0x0000.1000 == 0) then
                                create_sprite3d(sprite.x,sprite.y,sprite.z,
                                                         nil,nil,nil,
-                                                        function(sprite) local sx,sy=project_point(sprite.t_x,sprite.t_y,sprite.t_z) circfill(sx, sy, 0, sprite.life_span + 4) end,
-                                                        function(sprite) gravity(sprite, false, 0.1)  end,
-                                                        function(sprite) srand(time()) sprite.y = sprite.y + 0.001 sprite.vy = 2 sprite.vx = rnd(2)-1 sprite.vz = rnd(2)-1 end, 
-                                                        20)
+                                                        function(params) circfill_to_scale(5,params,params[1].life_span + 4 ) end,
+                                                        function(sprite) gravity(sprite, true) acc(sprite)  end,
+                                                        function(sprite) srand(time()) sprite.y = sprite.y + 0.001 sprite.vy = 5 sprite.vx = rnd(2)-1+player.vx sprite.vz = rnd(2)-1+player.vz end, 
+                                                        20,
+                                                        function(params) circfill_to_scale(5,params,0) end)
                             end
                         end
                         if(btn(0))then
@@ -66,7 +69,25 @@ function game_init()
                     function(sprite) end)
                         
     -- instantiate a object3d
-    create_object3d(1, player.x,100, player.z,0,0,0,function(sprite) gravity(sprite, false, .05)  end)
+
+    create_sprite3d(0,100,100,
+                    nil,nil,nil,
+                    function(params) spr_to_scale(64,2,3,params) end,
+                    function(sprite) gravity(sprite)  end,
+                    NOP,
+                    666,
+                    function(params) spr_to_scale(66,1,1,params,0,-7) end
+    )
+
+    create_sprite3d(10,55,100,
+                    nil,nil,nil,
+                    function(params)  print("< this is a sprite",params[2]+1,params[3]+1,0) print("< this is a sprite",params[2],params[3],7) end
+    )
+
+    create_sprite3d(-5,55,140,
+                    nil,nil,nil,
+                    function(params)  print("< this is a 3d object",params[2]+1,params[3]+1,0) print("< this is a 3d object",params[2],params[3],7) end
+    )
 end
 
 function get_color_id(idx,idz,flip)
@@ -83,10 +104,6 @@ function get_color_id(idx,idz,flip)
 end
 
 function logic_update()
-    
-   -- player.x = player.x%(terrain_size)
-    --player.z = player.z%(terrain_size)
-
     -- logic update objects in terrain
 
     update_terrain()
@@ -106,6 +123,7 @@ function draw_update()
 
     -- must call to render map
     render_minimap()
+
+    print('press z for particles',40,0,7)
+    print(stat(1),40,8,7)
 end
-
-
