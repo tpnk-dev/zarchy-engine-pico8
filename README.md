@@ -44,14 +44,14 @@ Load main.p8. The sample "game" is in game.lua. What you need to know:
 - Use ```create_sprite3d``` and add it to ```game_objects3d``` to instantiate sprites/particles.
   - Sprites have many parameters, such as 
     - ```x```,```y```,```z```: Initial position
-    - ```draw_func```: the function that draws the shape, like rectfill
+    - ```draw_func```: the function that draws the shape, like rectfill or spr. Helper functions spr_to_scale <sup>NEW</sup> and circfill_to_scale <sup>NEW</sup> can draw sprites with correct scaling when further or close to the object
     - ```update_func```: a function that updates the logic the object every frame
-    - ```start_func```: a function which only runs when sprite is created
+    - ```start_func```: a function that only runs when sprite is created
     - ```vx```,```vy```,```vz```: initial velocity on each axis
     -  ```life_span```: how much time the sprite will last on screen
-    -  ```no_shadow```: true if sprite has no shadow
+    -  ```shadow_func (previously no_shadow)```<sup>NEW</sup>: a function that draws the shape of the shadow
     -  ```disposable```: true if sprite can be destroyed if many are on screen
-- To simulate gravity, you can set ```update_func``` to ```gravity``` which is a helper function located in zarchy_engine.lua
+- To simulate gravity and acceleration, you can call ```gravity``` and/or ```acc``` <sup>NEW</sup> from inside ```update_func``` when creating the object. These two are helper functions located in zarchy_engine.lua
 
 ### Terrain generation
 
@@ -61,7 +61,7 @@ Load main.p8. The sample "game" is in game.lua. What you need to know:
 
 ### Other parameters
 - zarchy_engine.lua
-  - TERRAIN_NUMVERTS: How many vertices the terrain has, horizontaly and verticaly. **HAS TO BE AN ODD NUMBER**
+  - TERRAIN_NUMVERTS: How many vertices the terrain has, horizontally and vertically. **HAS TO BE AN ODD NUMBER**
   - TILE_SIZE: The.. size of each tile
   - NUMSECTS: number of "sectors" the map has. Each sector is a pixel on the minimap. **(TERRAIN_NUMVERTS-1) MUST be divisible by NUMSECTS**
   - K_SCREEN_SCALE,K_X_CENTER,K_Y_CENTER,Z_CLIP,Z_MAX: Some camera params. I wouldn't mess with these.
