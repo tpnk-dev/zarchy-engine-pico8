@@ -1,5 +1,5 @@
--- @marcospiv's 'ZARCHY' engine - 2021
--- 3072 tokens
+-- @marcospiv's 'ZARCHY' engine - 2023
+-- 3083 tokens
 -- tpnk_dev
 -- UPPER CASE ARE CONSTANTS. ONLY MODIFY THEM, UNLESS YOU KNOW WHAT YOU ARE DOING. REPLACE WITH FINAL VALUE IN PRODUCTION CODE.
 
@@ -151,26 +151,26 @@ function trifill(x1,y1,x2,y2,x3,y3, color)
     
     local nsx,nex
     --sort y1,y2,y3
-    if(y1>y2)then
+    if y1>y2 then
         y1,y2=y2,y1
         x1,x2=x2,x1
     end
     
-    if(y1>y3)then
+    if y1>y3 then
         y1,y3=y3,y1
         x1,x3=x3,x1
     end
     
-    if(y2>y3)then
+    if y2>y3 then
         y2,y3=y3,y2
         x2,x3=x3,x2          
     end
     
-    if(y1!=y2)then          
+    if y1!=y2 then          
         local delta_sx=(x3-x1)/(y3-y1)
         local delta_ex=(x2-x1)/(y2-y1)
     
-    if(y1>0)then
+    if y1>0 then
         nsx=x1
         nex=x1
         min_y=y1
@@ -193,13 +193,13 @@ function trifill(x1,y1,x2,y2,x3,y3, color)
         nex=x2
     end
    
-    if(y3!=y2)then
+    if y3!=y2 then
         local delta_sx=(x3-x1)/(y3-y1)
         local delta_ex=(x3-x2)/(y3-y2)
         
         min_y=y2
         max_y=min(y3,128)
-        if(y2<0)then
+        if y2<0 then
             nex=x2-delta_ex*y2
             nsx=x1-delta_sx*y1
             min_y=0
@@ -230,23 +230,15 @@ function save_map_memory()
         for x=0,TERRAIN_NUMVERTS-sector_numfaces,sector_numfaces do
             local h = 2
             local current_sect_height = get_height_id(x+sector_numfaces\2,y+sector_numfaces\2)
-            if(sector_slopes[y_count][(x_count-1)%NUMSECTS])then
-                h = current_sect_height - sector_slopes[y_count][(x_count-1)%NUMSECTS]
-            else
-                h = current_sect_height
-            end
+
+            h = sector_slopes[y_count][(x_count-1)%NUMSECTS] and current_sect_height - sector_slopes[y_count][(x_count-1)%NUMSECTS] or current_sect_height
 
             local color_p = 1
-            if(h >= 0)  then
-                color_p = 3 
-            elseif (h < 0) then 
-                color_p = 11
-            end
 
-            if(current_sect_height == 0) then
-                color_p = 1
-            end
+            color_p = h >= 0 and 3 or 11 
 
+            if (current_sect_height == 0) color_p = 1
+            
             sector_slopes[y_count][x_count] = current_sect_height
 
             sset( minimap_memory_start+x_count, minimap_memory_start+y_count, color_p)
@@ -256,17 +248,18 @@ function save_map_memory()
         y_count += 1
     end 
 end
+
 function render_minimap()
     sspr(minimap_memory_start, minimap_memory_start, NUMSECTS, NUMSECTS, 0, 0,NUMSECTS+1,NUMSECTS+1)
     pset(((mov_tiles_x)\(sector_numfaces)),NUMSECTS+((-mov_tiles_z)\sector_numfaces), 7)
 end
 
--- @TRANSFORM AND DRAW TERRAIN
+-- @DRAW TERRAIN AND DEPTH BUFFER
 function render_terrain()
     order_objects()
     update_view()
     rectfill(0,0,128,128,0)
-    if(is_inside_cam_cone_y((terrainmesh[1][1])&0x00ff.ffff)) then
+    if is_inside_cam_cone_y((terrainmesh[1][1])&0x00ff.ffff) then
         local trans_proj_verts = {}
         for v=(mesh_numverts)*(mesh_numverts)-1,0,-1 do
             -- instantiate vertices
@@ -292,7 +285,7 @@ function render_terrain()
             if(v%mesh_numverts!=0 and v%mesh_numverts<mesh_numverts-1 and v\mesh_numverts!=0)then 
                 local type_object3d=get_type_id(vert_x_id,vert_z_id)
                 srand(vert_x_id * vert_z_id)
-                if(type_object3d > 0) add(envir, create_object3d(get_type_id(vert_x_id, vert_z_id), vert_world_x, vert_world_y, vert_world_z-1,nil,nil,nil,nil,TERRAIN_FUNCS[type_object3d],nil,nil,nil,true,true))
+                if(type_object3d > 0) create_object3d(get_type_id(vert_x_id, vert_z_id), vert_world_x, vert_world_y, vert_world_z-1,nil,nil,nil,nil,TERRAIN_FUNCS[type_object3d],nil,nil,nil,true,true)
             end
             
             --x[[ DEBUG PRINT VERTEX DATA
@@ -322,7 +315,7 @@ function render_terrain()
         --]]
 
         for v=1,#trans_proj_verts do
-            if(v%mesh_numverts != 0 and v>mesh_numverts-1) then
+            if v%mesh_numverts != 0 and v>mesh_numverts-1 then
                 local p1,p2,p3,p4=trans_proj_verts[v+1],trans_proj_verts[v-mesh_numverts+1],trans_proj_verts[v],trans_proj_verts[v-mesh_numverts]
                 
                 local s1x,s1y = p1[4],p1[5]
@@ -354,9 +347,9 @@ function render_terrain()
                     print(v, p1[4],p1[5]-3, 8)
                 --]]
             else
-                if(v%mesh_numverts == 0) then
+                if v%mesh_numverts == 0 then
                     local a = abs((v-(mesh_numfaces+1))\mesh_numverts - (mesh_numfaces+1))
-                    if(a<mesh_numfaces) then
+                    if a<mesh_numfaces then
                         for z=#depth_buffer[a],1,-1 do
                             depth_buffer[a][z]:draw()
                         end
@@ -410,7 +403,9 @@ function update_view()
     t_height_player_smooth = get_height_smooth(player)
     mesh_leftmost_x,mesh_rightmost_x,mesh_downmost_z,mesh_upmost_z=mov_tiles_x-(mesh_numverts\2-1),mesh_numverts+mesh_leftmost_x-1,mov_tiles_z-(mesh_numverts\2-1),mesh_numverts+mesh_downmost_z-1
 end
+--
 
+-- @TRANSFORM AND DRAW OBJECTS
 function draw_object3d(object)
     for i=1, #object.t_verts do
         local vertex=object.t_verts[i]
@@ -471,17 +466,13 @@ function update_terrain()
         local deleted=false
         if object.life_span != nil then
             object.life_span -= time() - lasttime
-            if(object.life_span < 0) then   
-                deleted=true
-            end
+            if(object.life_span < 0) deleted=true
         end
         if object.remove != nil then
-            if(object.remove) then
-                deleted=true
-            end
+            if(object.remove) deleted=true
         end
 
-        if(not deleted) then
+        if not deleted then
             object:update_func()
             trunc_terrain(object)
         else
@@ -490,8 +481,9 @@ function update_terrain()
         end
     end
 end
+--
 
--- @HELPER FUNCTIONS FOR UPDATING OBJECTS
+-- @HELPER FUNCTIONS
 function acc(object3d)
     object3d.x+=object3d.vx
     object3d.z+=object3d.vz
@@ -505,9 +497,9 @@ function gravity(object3d, bouncy, strength)
     if object3d.y+object3d.vy>current_height then 
         object3d.y+=object3d.vy object3d.x+=object3d.vx object3d.z+=object3d.vz  object3d.vy-=strength
     else 
-        if(object3d.is_crash!=nil and object3d:is_crash()) then return true end
-        if(bouncy) then
-            if(abs(object3d.vy) < 0.1) then object3d.vy=0 object3d.vx=0 object3d.vz=0 object3d.y =current_height
+        if (object3d.is_crash!=nil and object3d:is_crash()) return true 
+        if bouncy then
+            if abs(object3d.vy) < 0.1 then object3d.vy=0 object3d.vx=0 object3d.vz=0 object3d.y =current_height
             else object3d.vy = (-object3d.vy/4) end
         else
             object3d.vy=0 object3d.vx=0 object3d.vz=0 object3d.y=current_height
@@ -517,58 +509,14 @@ end
 
 -- @CREATE OBJECTS3D
 function create_sprite3d(x,y,z,vx,vy,vz,draw_func,update_func,start_func,life_span,shadow_draw_func,disposable) 
-    local sprite3d = {
-        x = x,
-        y = y,
-        z = z,
-        vx = vx or 0,
-        vy = vy or 0,
-        vz = vz or 0,
-        draw = draw_func or NOP,
-        transform = transform_sprite3d,
-        update_func = update_func or NOP,
-        start_func = start_func or NOP,
-        life_span = life_span or nil,
-        t_x = 0,
-        t_y = 0,
-        t_z = 0,
-        d_x = 0,
-        d_z = 0,
-        shadow = nil,
-        disposable = disposable or false
-    }
-    
-    sprite3d.draw = function(sprite) draw_func({sprite,project_point(sprite.t_x,sprite.t_y,sprite.t_z)}) end
-
-    if(disposable) then
-        if(disposables[disposables_index] != nil) disposables[disposables_index].remove=true 
-        
-        disposables[disposables_index] = sprite3d 
-        disposables_index=(disposables_index+1)%disposables_size
-    end
-
-    local shadow_draw_func = shadow_draw_func or nil
-
-    sprite3d:start_func()
-
-    if(shadow_draw_func != nil)then
-        sprite3d.shadow = create_sprite3d(
-            sprite3d.d_x,get_height_pos(sprite3d.x, sprite3d.z),sprite3d.d_z,
-            nil,nil,nil,
-            shadow_draw_func,
-            function(sprite_shadow) sprite_shadow.x=sprite3d.x sprite_shadow.z=sprite3d.z+0.05 sprite_shadow.y=get_height_pos(sprite3d.x, sprite3d.z) end,
-            NOP, 
-            life_span)
-    end
-
-    add(game_objects3d, sprite3d)
-
-    trunc_terrain(sprite3d)
-
-    return sprite3d
+    return _create_object3d(0,x,y,z,0,0,0,update_func,start_func,draw_func,vx,vy,vz,false,false,life_span,disposable,shadow_draw_func)
 end
 
-function create_object3d(obj_id,x,y,z,ay,ax,az,update_func,start_func,vx,vy,vz,no_shadow,is_terrain)
+function create_object3d(obj_id,x,y,z,ay,ax,az,update_func,start_func,vx,vy,vz,no_shadow,is_terrain) 
+    return _create_object3d(obj_id,x,y,z,ay,ax,az,update_func,start_func,NOP,vx,vy,vz,no_shadow,is_terrain)
+end
+
+function _create_object3d(obj_id,x,y,z,ay,ax,az,update_func,start_func,draw_func,vx,vy,vz,no_shadow,is_terrain,life_span, disposable, shadow_draw_func)
     local object3d = {
         obj_id=obj_id,
         x = x,
@@ -582,19 +530,73 @@ function create_object3d(obj_id,x,y,z,ay,ax,az,update_func,start_func,vx,vy,vz,n
         vy = vy or 0,
         vx = vx or 0,
         vz = vz or 0,
+        life_span = life_span,
+        disposable = disposable,
         verts = OBJS_DATA[obj_id][1],
         tris = OBJS_DATA[obj_id][2],
+        t_x = 0,
+        t_y = 0,
+        t_z = 0,
         d_x = 0,
         d_z = 0,
         t_verts={},
         draw=draw_object3d,
-        transform=transform_object3d,
-        shadow = nil,
-        no_shadow = no_shadow or false
+        no_shadow = no_shadow,
+        shadow_draw_func = shadow_draw_func or nil
     }
     
-    is_terrain = is_terrain or false
-    --local no_shadow = no_shadow or false
+    is_terrain = is_terrain
+
+    object3d:start_func()
+
+    if obj_id==0  then
+        object3d.transform=transform_sprite3d
+        object3d.draw = function(sprite) draw_func({sprite,project_point(sprite.t_x,sprite.t_y,sprite.t_z)}) end
+
+        if disposable then
+            if(disposables[disposables_index] != nil) disposables[disposables_index].remove=true 
+            
+            disposables[disposables_index] = object3d 
+            disposables_index=(disposables_index+1)%disposables_size
+        end
+
+        --sprite3d:start_func()
+
+        if(object3d.shadow_draw_func != nil)then
+            object3d.shadow = create_sprite3d(
+                object3d.d_x,get_height_pos(object3d.x, object3d.z),object3d.d_z,
+                nil,nil,nil,
+                shadow_draw_func,
+                function(sprite_shadow) sprite_shadow.x=object3d.x sprite_shadow.z=object3d.z+0.05 sprite_shadow.y=get_height_pos(object3d.x, object3d.z) end,
+                NOP, 
+                life_span)
+        end
+    else
+        object3d.transform=transform_object3d
+        object3d.draw = draw_object3d   
+        
+        if not object3d.no_shadow then
+            object3d.shadow = create_object3d(
+                obj_id + 1, 
+                0,0,0,
+                0,0,0,
+                function(shadow) 
+                    shadow.x = object3d.x 
+                    shadow.z = object3d.z 
+                    shadow.y=get_height_smooth(object3d) 
+                    shadow.ay = object3d.ay 
+                end,
+                NOP,0,0,0,true
+            )  
+        end 
+    end
+
+    if is_terrain then
+        add(envir,object3d)
+        add(depth_buffer[abs(object3d.z-mesh_downmost_z*TILE_SIZE)\TILE_SIZE], object3d)
+    else
+        add(game_objects3d, object3d)
+    end
 
     for i=1,#object3d.verts do
         object3d.t_verts[i]={}
@@ -603,28 +605,8 @@ function create_object3d(obj_id,x,y,z,ay,ax,az,update_func,start_func,vx,vy,vz,n
         end
     end
 
-    if(is_terrain) then
-        add(depth_buffer[abs(object3d.z-mesh_downmost_z*TILE_SIZE)\TILE_SIZE], object3d)
-    else
-        if(not object3d.no_shadow) then
-            --shadow is the next obj in obj_data
-            object3d.shadow = create_object3d(
-                                obj_id + 1, 0,0,0,0,0,0,
-                                function(shadow) 
-                                    shadow.x = object3d.x 
-                                    shadow.z = object3d.z 
-                                    shadow.y=get_height_smooth(object3d) 
-                                    shadow.ay = object3d.ay 
-                                end,
-                                nil,nil,nil,nil,true,false)  
-             
-        end 
-        add(game_objects3d, object3d)
-    end
-
-    object3d:start_func()
-
     object3d:transform()
     
     return object3d
 end
+--

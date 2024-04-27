@@ -4,7 +4,8 @@ envir={}
 
 -- these are the object ids in the scene, use return_model with the correct memory position to add new models
 -- the next model in the sequence is always considered the shadow of the previous object
-OBJS_DATA = {decode_model(0), decode_model(45)}
+-- be sure to add [0]={{{0,0,0}},{}}, which is referenced by sprites
+OBJS_DATA = {[0]={{{0,0,0}},{}}, decode_model(0), decode_model(45)}
 
 --COLORS
 pal(1, 140, 1)
@@ -17,6 +18,7 @@ palt(0, false) -- black color as transparency is false
 rnd_dirt = {3,4,13,15}
 
 TERRAIN_FUNCS = { 
+    [0]=NOP,
     function(object) 
         object.ay += cos(time()) * .1
         object.z += sin(time()) * 3
@@ -41,12 +43,12 @@ function game_init()
                         if(btn(4))then
                             if(time()&0x0000.1000 == 0) then
                                create_sprite3d(sprite.x,sprite.y,sprite.z,
-                                                        nil,nil,nil,
-                                                        function(params) circfill_to_scale(5,params,params[1].life_span + 4 ) end,
-                                                        function(sprite) gravity(sprite, true) acc(sprite)  end,
-                                                        function(sprite) srand(time()) sprite.y = sprite.y + 0.001 sprite.vy = 5 sprite.vx = rnd(2)-1+player.vx sprite.vz = rnd(2)-1+player.vz end, 
-                                                        20,
-                                                        function(params) circfill_to_scale(5,params,0) end)
+                                    nil,nil,nil,
+                                    function(params) circfill_to_scale(5,params,params[1].life_span + 4 ) end,
+                                    function(sprite) gravity(sprite, true) acc(sprite)  end,
+                                    function(sprite) srand(time()) sprite.y = sprite.y + 0.001 sprite.vy = 5 sprite.vx = rnd(2)-1+player.vx sprite.vz = rnd(2)-1+player.vz end, 
+                                    20,
+                                    function(params) circfill_to_scale(5,params,0) end)
                             end
                         end
                         if(btn(0))then
